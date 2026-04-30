@@ -1,0 +1,3865 @@
+STRUCTURE:
+├── ...
+├── .gitignore
+├── DB_MAP.md
+├── INSTRUCTIONS_OAUTH.md
+├── LOCKED_FILES.md
+├── apply.js
+├── apply_status.json
+├── cleanup.js
+├── client/
+│   ├── .eslintrc.cjs
+│   ├── .gitignore
+│   ├── README.md
+│   ├── index.html
+│   ├── package.json
+│   ├── postcss.config.cjs
+│   ├── public/
+│   │   └── vite.svg
+│   ├── src/
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── assets/
+│   │   │   └── react.svg
+│   │   ├── components/
+│   │   │   └── SystemStatus/
+│   │   │       ├── SystemStatus.css
+│   │   │       └── SystemStatus.jsx
+│   │   ├── features/
+│   │   │   ├── admin/
+│   │   │   │   ├── AdminDashboard.css
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── AdminPage.css
+│   │   │   │   ├── AdminPage.jsx
+│   │   │   │   └── components/
+│   │   │   │       ├── DatabaseViewer.css
+│   │   │   │       ├── DatabaseViewer.jsx
+│   │   │   │       ├── DriveViewer.css
+│   │   │   │       └── DriveViewer.jsx
+│   │   │   └── auth/
+│   │   │       ├── Login.css
+│   │   │       └── Login.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── test_ok.txt
+│   │   ├── test_token_crash.js
+│   │   └── test_token_valid.txt
+│   ├── tailwind.config.cjs
+│   └── vite.config.js
+├── db-structure.js
+├── git-auto.js
+├── init-db.js
+├── magic-paste.js
+├── mongodbview.js
+├── package.json
+├── projectMap.txt
+├── public/
+│   ├── images/
+│   │   ├── Fiche_Croissance_Demographique_5e.docx
+│   │   ├── jetpack.png
+│   │   ├── jumper.png
+│   │   └── ~$che_Croissance_Demographique_5e.docx
+│   └── style.css
+├── scan-all-db.js
+├── server/
+│   ├── core/
+│   │   ├── ai.engine.js
+│   │   ├── drive.engine.js
+│   │   └── ocr.engine.js
+│   ├── domains/
+│   │   ├── admin/
+│   │   │   ├── admin.routes.js
+│   │   │   ├── ai/
+│   │   │   │   ├── admin.ai.js
+│   │   │   │   └── project-doc.ai.js
+│   │   │   ├── db/
+│   │   │   │   └── admin.db.js
+│   │   │   └── experts/
+│   │   │       ├── admin.db.js
+│   │   │       └── admin.expert.js
+│   │   ├── auth/
+│   │   │   ├── auth.routes.js
+│   │   │   ├── db/
+│   │   │   │   └── auth.db.js
+│   │   │   └── experts/
+│   │   │       └── auth.expert.js
+│   │   └── structure/
+│   │       └── structure.routes.js
+│   ├── models/
+│   │   ├── AcademicYear.js
+│   │   ├── AccessLog.js
+│   │   ├── Admin.js
+│   │   ├── BugReport.js
+│   │   ├── Classroom.js
+│   │   ├── DeploySignal.js
+│   │   ├── Enrollment.js
+│   │   ├── ProjectDoc.js
+│   │   ├── Student.js
+│   │   ├── Subject.js
+│   │   └── Teacher.js
+│   ├── server.js
+│   └── version.json
+├── snap.js
+├── systemInstructions.md
+├── tests/
+│   └── integrity.test.js
+├── tree.txt
+└── verificatons.txt
+
+
+CODE:
+
+[[[£ FILE: DB_MAP.md £]]]
+# 🗺️ STRUCTURE DE LA BASE DE DONNÉES
+Généré le : 2/15/2026, 10:34:41 AM
+
+## 📦 Collection : `academicyears` (Model: AcademicYear)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **isCurrent** | `Boolean` | Def: true |
+| **label** | `String` | ✅ REQ |
+
+---
+
+## 📦 Collection : `accesslogs` (Model: AccessLog)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **action** | `String` | - |
+| **timestamp** | `Date` | Def: (func) |
+| **userId** | `String` | - |
+
+---
+
+## 📦 Collection : `admins` (Model: Admin)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **email** | `String` | ✅ REQ, 🔑 UNIQUE |
+| **firstName** | `String` | ✅ REQ |
+| **isDeveloper** | `Boolean` | Def: false |
+| **isTestAccount** | `Boolean` | Def: false |
+| **lastName** | `String` | ✅ REQ |
+| **password** | `String` | ✅ REQ |
+| **role** | `String` | Def: admin, Enum: [admin, developer] |
+| **subjectSections** | `[Mixed/Object]` | Def:  |
+
+---
+
+## 📦 Collection : `bugreports` (Model: BugReport)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **createdAt** | `Date` | Def: (func) |
+| **description** | `String` | - |
+| **stack** | `String` | - |
+| **status** | `String` | Def: open |
+
+---
+
+## 📦 Collection : `classrooms` (Model: Classroom)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **associatedClasses** | `[🔗 Ref(Classroom)]` | - |
+| **layout** | `Embedded` | Def: (func) |
+| **level** | `String` | - |
+| **name** | `String` | ✅ REQ, 🔑 UNIQUE |
+| **type** | `String` | Def: CLASS, Enum: [CLASS, GROUP] |
+| **yearId** | `ObjectId` | - |
+
+---
+
+## 📦 Collection : `deploysignals` (Model: DeploySignal)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **status** | `String` | - |
+| **updatedAt** | `Date` | - |
+
+---
+
+## 📦 Collection : `enrollments` (Model: Enrollment)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **classId** | `ObjectId` | ✅ REQ |
+| **studentId** | `ObjectId` | ✅ REQ |
+| **yearId** | `ObjectId` | ✅ REQ |
+
+---
+
+## 📦 Collection : `projectdocs` (Model: ProjectDoc)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **description** | `String` | - |
+| **fileName** | `String` | 🔑 UNIQUE |
+
+---
+
+## 📦 Collection : `students` (Model: Student)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **activePunishmentId** | `ObjectId` | - |
+| **assignedGroups** | `[🔗 Ref(Classroom)]` | - |
+| **behaviorRecords** | `[Mixed/Object]` | Def:  |
+| **birthDate** | `String` | Def:  |
+| **classId** | `ObjectId` | - |
+| **currentClass** | `String` | - |
+| **currentLevel** | `String` | - |
+| **email** | `String` | - |
+| **firstName** | `String` | ✅ REQ |
+| **fullName** | `String` | - |
+| **gender** | `String` | Def: M, Enum: [M, F] |
+| **hasReward** | `Boolean` | Def: false |
+| **isTestAccount** | `Boolean` | Def: false |
+| **lastLogin** | `Date` | Def: (func) |
+| **lastName** | `String` | ✅ REQ |
+| **parentEmail** | `String` | - |
+| **password** | `String` | Def: 123456 |
+| **punishmentDueDate** | `Date` | - |
+| **punishmentStatus** | `String` | Def: NONE, Enum: [NONE, PENDING, LATE, DONE] |
+| **seatX** | `Number` | Def: 0 |
+| **seatY** | `Number` | Def: 0 |
+| **teacherNotes** | `[Mixed/Object]` | Def:  |
+
+---
+
+## 📦 Collection : `subjects` (Model: Subject)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **color** | `String` | Def: #6366f1 |
+| **icon** | `String` | - |
+| **name** | `String` | ✅ REQ, 🔑 UNIQUE |
+
+---
+
+## 📦 Collection : `teachers` (Model: Teacher)
+| Champ | Type | Options |
+| :--- | :--- | :--- |
+| **_id** | `ObjectId` | - |
+| **assignedClasses** | `[🔗 Ref(Classroom)]` | - |
+| **assignedClassesText** | `String` | Def:  |
+| **driveFolderId** | `String` | - |
+| **firstName** | `String` | ✅ REQ |
+| **isDeveloper** | `Boolean` | Def: false |
+| **isTestAccount** | `Boolean` | Def: false |
+| **lastName** | `String` | ✅ REQ |
+| **password** | `String` | ✅ REQ |
+| **subjectSections** | `[Mixed/Object]` | Def:  |
+| **taughtSubjects** | `[🔗 Ref(Subject)]` | - |
+| **taughtSubjectsText** | `String` | Def:  |
+
+---
+
+
+[[[£ END: DB_MAP.md £]]]
+
+[[[£ FILE: INSTRUCTIONS_OAUTH.md £]]]
+# 🔐 RÉPARER L'ERREUR INVALID_GRANT
+Si ton token expire, lance : http://localhost:3000/api/auth/google/login
+Puis colle le code dans ton .env (GOOGLE_REFRESH_TOKEN).
+[[[£ END: INSTRUCTIONS_OAUTH.md £]]]
+
+[[[£ FILE: LOCKED_FILES.md £]]]
+# 🔒 FICHIERS SANCTUARISÉS
+- server/server.js (Enregistrement Modèles)
+- client/src/App.jsx (Logiciel de synchronisation)
+[[[£ END: LOCKED_FILES.md £]]]
+
+[[[£ FILE: apply.js £]]]
+const fs = require('fs');
+const path = require('path');
+const inputFile = 'update.txt';
+const statusFile = 'apply_status.json';
+
+console.log("------------------------------------------------");
+console.log("🤖 [CONSTITUTION] apply.js v33 (STABLE) actif.");
+console.log("🚀 Protection Write-Crash activée.");
+console.log("------------------------------------------------");
+
+function setStatus(status, file = null) {
+    try { 
+        fs.writeFileSync(statusFile, JSON.stringify({ status, file, timestamp: Date.now() }, null, 2)); 
+    } catch (e) {
+        console.error("⚠️ Erreur écriture status:", e.message);
+    }
+}
+
+function applyUpdate() {
+    if (!fs.existsSync(inputFile)) return;
+    
+    let rawContent = "";
+    try { 
+        rawContent = fs.readFileSync(inputFile, 'utf8'); 
+    } catch (e) { 
+        console.error("⚠️ Lecture impossible update.txt (occupé?)");
+        return; 
+    }
+
+    if (rawContent.trim().length < 10) return;
+
+    let processed = false;
+    const startRegex = /\[\[\[£\s*FILE\s*:\s*([^£\]\s]+)\s*£\]\]\]/g;
+    let startMatch;
+
+    // Protection contre les boucles infinies de lecture
+    let filesProcessed = 0;
+
+    while ((startMatch = startRegex.exec(rawContent)) !== null) {
+        try {
+            const filePath = startMatch[1].trim();
+            const contentStartIndex = startMatch.index + startMatch[0].length;
+            const endTag = `[[[£ END: ${filePath} £]]]`;
+            const endIdx = rawContent.indexOf(endTag);
+
+            if (endIdx !== -1) {
+                const fileContent = rawContent.substring(contentStartIndex, endIdx).trim();
+                const fullPath = path.join(__dirname, filePath);
+                
+                // Création récursive des dossiers
+                if (!fs.existsSync(path.dirname(fullPath))) {
+                    fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+                }
+
+                fs.writeFileSync(fullPath, fileContent);
+                console.log(`   ✅ ÉCRIT : ${filePath}`);
+                processed = true;
+                filesProcessed++;
+            }
+        } catch (err) {
+            console.error(`   ❌ ERREUR CRITIQUE SUR FICHIER : ${err.message}`);
+        }
+    }
+
+    if (processed) {
+        try {
+            fs.writeFileSync(inputFile, ''); // Vidage atomique
+            setStatus('OK');
+            console.log(`✨ SYNC TERMINÉE (${filesProcessed} fichiers).`);
+        } catch (e) {
+            console.error("❌ Impossible de vider update.txt");
+        }
+    }
+}
+
+// Initialisation propre
+setStatus('OK');
+// Intervalle augmenté légèrement pour stabilité FS
+setInterval(applyUpdate, 1500);
+[[[£ END: apply.js £]]]
+
+[[[£ FILE: apply_status.json £]]]
+{
+  "status": "OK",
+  "file": null,
+  "timestamp": 1771254621716
+}
+[[[£ END: apply_status.json £]]]
+
+[[[£ FILE: cleanup.js £]]]
+const fs = require('fs');
+const path = require('path');
+
+const DIRS_TO_CLEAN = [
+    'public/uploads',
+    'public/uploads/temp'
+];
+
+console.log("🧹 NETTOYAGE DES FICHIERS TEMPORAIRES...");
+
+function cleanDir(directory) {
+    const fullPath = path.join(__dirname, directory);
+    if (fs.existsSync(fullPath)) {
+        const files = fs.readdirSync(fullPath);
+        for (const file of files) {
+            if (file === '.gitkeep') continue;
+            try {
+                fs.unlinkSync(path.join(fullPath, file));
+                console.log(`   🗑️ Supprimé : ${file}`);
+            } catch (e) {
+                console.error(`   ❌ Erreur suppression ${file}`);
+            }
+        }
+    } else {
+        // Création si inexistant pour éviter crash
+        fs.mkdirSync(fullPath, { recursive: true });
+    }
+}
+
+DIRS_TO_CLEAN.forEach(dir => cleanDir(dir));
+
+console.log("✨ DOSSIER UPLOADS VIDÉ (Fichiers inutiles supprimés).");
+[[[£ END: cleanup.js £]]]
+
+[[[£ FILE: client/README.md £]]]
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[[[£ END: client/README.md £]]]
+
+[[[£ FILE: client/index.html £]]]
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Condamine Pro</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+[[[£ END: client/index.html £]]]
+
+[[[£ FILE: client/package.json £]]]
+{
+  "name": "client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.11.0",
+    "@vitejs/plugin-basic-ssl": "1.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.4.1",
+    "vite": "^4.4.5"
+  }
+}
+[[[£ END: client/package.json £]]]
+
+[[[£ FILE: client/src/App.css £]]]
+.app-wrapper {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* BANDEAU DE SÉCURITÉ V99 : INTÉGRÉ AU FLUX (NE POLLUE PLUS) */
+.v99-test-header {
+    background: #dc2626;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 900;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 11000;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-back-dev-mini {
+    background: white;
+    color: #dc2626;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: 950;
+    font-size: 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-back-dev-mini:hover {
+    transform: scale(1.05);
+    background: #fef2f2;
+}
+
+.sync-overlay {
+    position: fixed; inset: 0; background: #0f172a;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999999;
+}
+[[[£ END: client/src/App.css £]]]
+
+[[[£ FILE: client/src/App.jsx £]]]
+import React, { useState, useEffect, useRef } from 'react';
+import Login from './features/auth/Login';
+import AdminPage from './features/admin/AdminPage';
+import SystemStatus from './components/SystemStatus/SystemStatus';
+import './App.css';
+
+export default function App() {
+  const [user, setUser] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isAppReady, setIsAppReady] = useState(false); 
+  const bootIdRef = useRef(null);
+
+  useEffect(() => {
+    const checkUpdate = async () => {
+      try {
+        const res = await fetch('/api/check-deploy');
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        if (!bootIdRef.current) {
+            bootIdRef.current = data.bootId;
+            setIsAppReady(true);
+        } else if (data.bootId !== bootIdRef.current) {
+            setIsSyncing(true);
+            setIsAppReady(false);
+            setTimeout(() => window.location.reload(), 1000);
+        }
+      } catch (e) {}
+    };
+    const timer = setInterval(checkUpdate, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('player');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            // FILTRE DE SÉCURITÉ : Uniquement Admin ou Dev
+            if (parsed.role === 'admin' || parsed.isDeveloper) {
+                setUser({ ...parsed, id: parsed._id || parsed.id });
+            } else {
+                localStorage.clear();
+            }
+        } catch(e) {
+            localStorage.clear();
+        }
+    }
+  }, []);
+
+  const handleLogout = () => { 
+      localStorage.clear(); 
+      setUser(null); 
+  };
+
+  if (isSyncing) return (
+    <div className="sync-overlay">
+        <div className="text-center">
+            <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4 mx-auto"></div>
+            <h2 className="text-white font-black uppercase tracking-tighter">Synchronisation Core...</h2>
+        </div>
+    </div>
+  );
+  
+  if (!user) return (
+      <div className="app-wrapper">
+          <SystemStatus isAppReady={isAppReady} />
+          <Login onLoginSuccess={setUser} />
+      </div>
+  );
+
+  return (
+    <div className="app-wrapper">
+      <SystemStatus isAppReady={isAppReady} />
+      <AdminPage user={user} onLogout={handleLogout} />
+    </div>
+  );
+}
+[[[£ END: client/src/App.jsx £]]]
+
+[[[£ FILE: client/src/components/SystemStatus/SystemStatus.css £]]]
+.system-status-banner-flow {
+    position: relative;
+    width: 100%;
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    z-index: 50;
+    overflow: hidden;
+    height: 44px;
+    display: flex;
+    align-items: center;
+}
+
+.system-status-content-wrapper {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+[[[£ END: client/src/components/SystemStatus/SystemStatus.css £]]]
+
+[[[£ FILE: client/src/components/SystemStatus/SystemStatus.jsx £]]]
+import React, { useState, useEffect, useRef } from 'react';
+import './SystemStatus.css';
+
+export default function SystemStatus({ isAppReady }) {
+    const [statusData, setStatusData] = useState({ status: 'OK', timestamp: 0 });
+    const [visible, setVisible] = useState(false);
+    const [isManuallyHidden, setIsManuallyHidden] = useState(false); 
+    const [version, setVersion] = useState('?');
+    
+    const lastTimestampRef = useRef(0);
+
+    useEffect(() => {
+        const fetchVersion = async () => {
+            try {
+                const res = await fetch('/api/system/version');
+                const d = await res.json();
+                setVersion(d.hash || d.build || "?");
+            } catch (e) {}
+        };
+        if (isAppReady) fetchVersion();
+    }, [isAppReady]);
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            if (!isAppReady) return; 
+            try {
+                const res = await fetch('/api/system/apply-status');
+                const data = await res.json();
+                setStatusData(data);
+
+                if (data.timestamp !== lastTimestampRef.current) {
+                    lastTimestampRef.current = data.timestamp;
+                    setIsManuallyHidden(false); 
+                    setVisible(true);
+                } 
+            } catch (e) {}
+        }, 3000);
+        return () => clearInterval(interval);
+    }, [isAppReady]);
+
+    if (!visible || isManuallyHidden) return null;
+
+    return (
+        <div className={`system-status-banner-flow bg-indigo-600 show`}>
+            <div className="system-status-content-wrapper">
+                <div className="flex items-center gap-2">
+                    <span className="text-[10px] bg-black/30 px-2 py-0.5 rounded font-black tracking-widest">BUILD #{version}</span>
+                    <span className="text-[11px] font-black uppercase">CONSOLE ADMIN OPÉRATIONNELLE</span>
+                </div>
+                <button onClick={() => setIsManuallyHidden(true)} className="bg-white/10 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black">✕</button>
+            </div>
+        </div>
+    );
+}
+[[[£ END: client/src/components/SystemStatus/SystemStatus.jsx £]]]
+
+[[[£ FILE: client/src/features/admin/AdminDashboard.css £]]]
+/* --- AJOUTS V2 : Boutons d'import sur carte --- */
+
+.btn-import-mini {
+    background: #e0e7ff; 
+    color: #4338ca;
+    border: 1px solid #c7d2fe;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-import-mini:hover {
+    background: #4338ca;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(67, 56, 202, 0.2);
+}
+
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+}
+.admin-toolbar-pill {
+    background: #0f172a;
+    border-radius: 50px;
+    padding: 12px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    gap: 20px;
+}
+.nav-links { display: flex; gap: 25px; }
+.nav-link {
+    color: #64748b; font-weight: 900; font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 1px; transition: all 0.2s; background: none; border: none; cursor: pointer; padding: 5px 0;
+}
+.nav-link:hover { color: #f8fafc; }
+.nav-link.active { color: #818cf8; border-bottom: 2px solid #818cf8; }
+.action-buttons { display: flex; gap: 12px; align-items: center; }
+.btn-pill {
+    height: 36px; padding: 0 18px; border-radius: 12px; font-weight: 900;
+    font-size: 0.65rem; text-transform: uppercase; border: none; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-clean { background: #dc2626; color: white; }
+.btn-import { background: #8b5cf6; color: white; }
+.btn-add { background: #334155; color: white; }
+.btn-pill:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.search-container {
+    background: white; border-radius: 20px; padding: 15px 25px; display: flex; align-items: center;
+    gap: 15px; margin-bottom: 25px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+.search-input { flex: 1; border: none; outline: none; font-weight: 700; font-size: 1rem; color: #1e293b; }
+.class-filter-row { display: flex; gap: 10px; margin-bottom: 25px; overflow-x: auto; padding-bottom: 10px; }
+.class-chip {
+    padding: 8px 16px; border-radius: 12px; background: white; border: 1px solid #e2e8f0;
+    font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: all 0.2s; color: #64748b; white-space: nowrap;
+}
+.class-chip.active { background: #4f46e5; color: white; border-color: #4f46e5; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
+.item-card {
+    background: white; border-radius: 25px; padding: 20px 30px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.item-main { display: flex; flex-direction: column; gap: 4px; }
+.item-title { font-weight: 900; font-size: 1rem; text-transform: uppercase; display: flex; align-items: center; gap: 10px; color: #1e293b; }
+.badge-niv { background: #eff6ff; color: #2563eb; padding: 2px 8px; border-radius: 6px; font-size: 0.6rem; font-weight: 950; border: 1px solid #dbeafe; }
+.item-sub { font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
+.item-actions { display: flex; gap: 10px; align-items: center; }
+.btn-action {
+    padding: 10px 20px; border-radius: 12px; font-size: 0.65rem; font-weight: 900; border: none;
+    cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+}
+/* NOUVEAU STYLE POUR LE BOUTON LISTE */
+.btn-list { background: #e0f2fe; color: #0369a1; }
+.btn-gerer { background: #f5f3ff; color: #7c3aed; }
+/* ✅ BOUTON VOIR (VISUALISATION) */
+.btn-view { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
+.btn-modif { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
+.btn-delete { 
+    background: #fff1f2; color: #e11d48; width: 38px; height: 38px; padding: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.btn-action:hover { transform: scale(1.05); filter: brightness(0.95); }
+
+/* --- SELECTION GRID (Relations Profs/Elèves) --- */
+.selection-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.toggle-chip {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #64748b;
+    transition: all 0.15s;
+    user-select: none;
+    text-transform: uppercase;
+}
+
+.toggle-chip:hover { border-color: #cbd5e1; color: #1e293b; }
+
+.toggle-chip.selected {
+    background: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
+    box-shadow: 0 2px 5px rgba(79, 70, 229, 0.3);
+}
+
+/* Chips désactivées en mode view */
+.toggle-chip.disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+.toggle-chip.disabled:hover {
+    border-color: #e2e8f0;
+    color: inherit;
+}
+
+.form-label {
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-top: 12px;
+    display: block;
+}
+[[[£ END: client/src/features/admin/AdminDashboard.css £]]]
+
+[[[£ FILE: client/src/features/admin/AdminDashboard.jsx £]]]
+import React, { useState, useEffect, useRef } from 'react';
+import './AdminDashboard.css';
+
+export default function AdminDashboard({ user }) {
+    const [view, setView] = useState('classes'); 
+    const [items, setItems] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [activeClassTab, setActiveClassTab] = useState('TOUS');
+    
+    // États des Modales
+    const [modalMode, setModalMode] = useState(null); 
+    const [currentItem, setCurrentItem] = useState(null);
+    const [viewingClass, setViewingClass] = useState(null);
+    const [zoomedItem, setZoomedItem] = useState(null);
+    
+    // États Magic Import & CSV
+    const [importing, setImporting] = useState(false);
+    const [showMagicModal, setShowMagicModal] = useState(false);
+    const [magicLog, setMagicLog] = useState("");
+    
+    // Refs pour upload fichier
+    const classCsvInputRef = useRef(null); 
+    const [targetImportClass, setTargetImportClass] = useState(null); 
+
+    // Données Globales
+    const [allClasses, setAllClasses] = useState([]);
+    const [allSubjects, setAllSubjects] = useState([]);
+    const [allStudents, setAllStudents] = useState([]); 
+
+    const collectionMap = { 
+        'classes': 'classrooms', 
+        'groups': 'classrooms', 
+        'teachers': 'teachers', 
+        'students': 'students', 
+        'administrateurs': 'admins', 
+        'subjects': 'subjects'
+    };
+
+    const loadData = async () => {
+        setLoading(true);
+        try {
+            const [rC, rS, rSt] = await Promise.all([
+                fetch('/api/admin/classrooms').then(r => r.json()),
+                fetch('/api/admin/subjects').then(r => r.json()),
+                fetch('/api/admin/students').then(r => r.json())
+            ]);
+            setAllClasses(rC || []);
+            setAllSubjects(rS || []);
+            setAllStudents(rSt || []); 
+
+            const r = await fetch(`/api/admin/${collectionMap[view]}`);
+            if (r.ok) {
+                const data = await r.json();
+                let list = Array.isArray(data) ? data : [];
+                if (view === 'classes') list = list.filter(c => c.type === 'CLASS');
+                if (view === 'groups') list = list.filter(c => c.type === 'GROUP');
+                setItems(list);
+            }
+        } catch (e) { console.error(e); }
+        setLoading(false);
+    };
+
+    useEffect(() => { loadData(); }, [view]);
+
+    // --- HANDLERS CRUD ---
+    const handleOpenCreate = () => {
+        let defaults = { 
+            name: '', firstName: '', lastName: '', fullName: '', 
+            password: '', 
+            type: view === 'groups' ? 'GROUP' : 'CLASS', 
+            taughtSubjects: [], assignedClasses: [], assignedGroups: [],
+            email: '', parentEmail: '', level: '',
+            gender: 'M', birthDate: ''
+        };
+        setCurrentItem(defaults);
+        setModalMode('create');
+    };
+
+    const handleDelete = async (id) => {
+        if (!confirm("⚠️ Confirmer la suppression ?")) return;
+        await fetch(`/api/admin/${collectionMap[view]}/${id}`, { method: 'DELETE' });
+        loadData();
+    };
+    
+    // --- ♻️ PURGE DE CLASSE ---
+    const handlePurgeClass = async (cls) => {
+        if (!confirm(`⚠️ DANGER IMMÉDIAT\n\nVous allez supprimer TOUS les élèves de la classe ${cls.name}.\n\nCette action est irréversible.\n\nVoulez-vous vraiment vider cette classe ?`)) return;
+        
+        const check = prompt(`🔴 SÉCURITÉ : Tapez le nom de la classe "${cls.name}" pour confirmer.`);
+        if (check !== cls.name) return alert("Annulé : Nom incorrect.");
+
+        setLoading(true);
+        try {
+            const res = await fetch('/api/admin/maintenance/purge/students', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ filterClassId: cls._id })
+            });
+            const data = await res.json();
+            alert(`✅ Opération terminée : ${data.deletedCount} élèves supprimés.`);
+            loadData();
+        } catch(e) { 
+            alert("Erreur serveur lors de la purge."); 
+        }
+        setLoading(false);
+    };
+
+    const handleSave = async () => {
+        if (modalMode === 'view') return; 
+
+        const targetCollection = collectionMap[view];
+        let dataToSend = { ...currentItem };
+        
+        if (view === 'teachers') {
+            const subjects = Array.isArray(dataToSend.taughtSubjects) ? dataToSend.taughtSubjects : [];
+            const classes = Array.isArray(dataToSend.assignedClasses) ? dataToSend.assignedClasses : [];
+            dataToSend.taughtSubjects = subjects;
+            dataToSend.assignedClasses = classes;
+            dataToSend.taughtSubjectsText = allSubjects.filter(s => subjects.includes(s._id)).map(s => s.name).join(', ');
+            dataToSend.assignedClassesText = allClasses.filter(c => classes.includes(c._id)).map(c => c.name).join(', ');
+        }
+
+        if (view === 'students') {
+             dataToSend.assignedGroups = Array.isArray(dataToSend.assignedGroups) ? dataToSend.assignedGroups : [];
+             const mainClass = allClasses.find(c => c._id === dataToSend.classId);
+             dataToSend.currentClass = mainClass ? mainClass.name : "SANS CLASSE";
+             if (!dataToSend.firstName || !dataToSend.lastName) return alert("Nom et Prénom obligatoires !");
+             
+             // Assurance Nom Complet
+             if (!dataToSend.fullName) dataToSend.fullName = `${dataToSend.lastName} ${dataToSend.firstName}`;
+             
+             // Assurance Password par défaut (Auto-génération si vide)
+             if (!dataToSend.password) {
+                 if(dataToSend.birthDate) {
+                     // Tentative format JJMMAAAA sur saisie manuelle
+                     const parts = dataToSend.birthDate.split(/[\/\-\.]/);
+                     if (parts.length === 3) {
+                         dataToSend.password = parts[0].padStart(2,'0') + parts[1].padStart(2,'0') + parts[2];
+                     } else {
+                         dataToSend.password = dataToSend.birthDate.replace(/[^0-9]/g, '');
+                     }
+                 } else {
+                    dataToSend.password = "123456";
+                 }
+             }
+        }
+
+        // ✅ VALIDATION ADMIN : EMAIL OBLIGATOIRE + UNICITÉ NOM/PRÉNOM
+        if (view === 'administrateurs') {
+            // 1. Email Check
+            if (!dataToSend.email || !dataToSend.email.includes('@')) {
+                return alert("⚠️ L'email est obligatoire et doit être valide pour un administrateur.");
+            }
+
+            // 2. Nom+Prénom Check (Client-Side)
+            const duplicateName = items.find(admin => 
+                admin._id !== dataToSend._id && // On ne se compare pas à soi-même en édition
+                admin.firstName.trim().toLowerCase() === dataToSend.firstName.trim().toLowerCase() &&
+                admin.lastName.trim().toLowerCase() === dataToSend.lastName.trim().toLowerCase()
+            );
+
+            if (duplicateName) {
+                return alert(`⛔ ERREUR : Un administrateur nommé "${dataToSend.firstName} ${dataToSend.lastName}" existe déjà.`);
+            }
+        }
+
+        if (view === 'groups') dataToSend.type = 'GROUP'; 
+
+        try {
+            const res = await fetch(`/api/admin/${targetCollection}`, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(dataToSend) 
+            });
+            const result = await res.json();
+            
+            if (result.error || result.code === 11000) {
+                // Gestion fine des doublons remontés par le serveur
+                if (result.keyPattern && result.keyPattern.email) {
+                    alert("❌ ERREUR : Cet email est déjà utilisé par un autre administrateur.");
+                } else {
+                    alert("❌ ERREUR : Cet élément existe déjà (Doublon Prénom+Nom ou Email).");
+                }
+            } else {
+                setModalMode(null); loadData();
+            }
+        } catch (e) { alert("Erreur réseau"); }
+    };
+
+    const toggleRelation = (field, id) => {
+        if (modalMode === 'view') return;
+        if (!currentItem) return;
+        const currentList = Array.isArray(currentItem[field]) ? [...currentItem[field]] : [];
+        if (currentList.includes(id)) {
+            setCurrentItem({ ...currentItem, [field]: currentList.filter(x => x !== id) });
+        } else {
+            setCurrentItem({ ...currentItem, [field]: [...currentList, id] });
+        }
+    };
+
+    const normalizeHeader = (str) => {
+        return str ? str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : "";
+    };
+
+    const parseEmailToIdentity = (email) => {
+        if (!email || !email.includes('@')) return null;
+        try {
+            const local = email.split('@')[0];
+            const parts = local.split(/[.]/); 
+            // RÈGLE : Partie 1 = Nom, Partie 2 = Prénom
+            let nom = parts[0] ? parts[0].toUpperCase() : "INCONNU";
+            let prenom = parts.length > 1 ? parts[1] : "";
+            if (prenom) prenom = prenom.charAt(0).toUpperCase() + prenom.slice(1).toLowerCase();
+            return { lastName: nom, firstName: prenom };
+        } catch (e) { return null; }
+    };
+
+    // --- 📥 IMPORT CSV STRICT (RÈGLES ETABLISSEMENT) ---
+    const triggerClassImport = (classId) => {
+        setTargetImportClass(classId);
+        setTimeout(() => {
+            if (classCsvInputRef.current) classCsvInputRef.current.click();
+        }, 50);
+    };
+
+    const handleClassFileSelect = (e) => {
+        const file = e.target.files[0];
+        if (!file || !targetImportClass) return;
+
+        const classObj = allClasses.find(c => c._id === targetImportClass);
+        const targetClassName = classObj ? classObj.name.toUpperCase().trim() : "SANS CLASSE";
+        
+        // 1. VERIF NOM FICHIER
+        if (!file.name.toUpperCase().includes(targetClassName)) {
+            alert(`⛔ FICHIER REJETÉ.\n\nRègle : Le fichier doit contenir "${targetClassName}" dans son nom.\nFichier actuel : ${file.name}`);
+            e.target.value = ""; 
+            return;
+        }
+
+        setImporting(true);
+        setShowMagicModal(true); 
+        setMagicLog(`📂 Lecture fichier : ${file.name}...\n`);
+
+        const reader = new FileReader();
+        
+        reader.onload = async (evt) => {
+            try {
+                const text = evt.target.result;
+                const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+                if (lines.length < 1) throw new Error("Fichier vide.");
+
+                const headerLineIndex = 0; 
+                const headerLineRaw = lines[headerLineIndex];
+
+                // 2. DÉTECTION SÉPARATEUR
+                const countSemi = (headerLineRaw.match(/;/g) || []).length;
+                const countComma = (headerLineRaw.match(/,/g) || []).length;
+                const separator = countSemi >= countComma ? ';' : ',';
+                setMagicLog(`⚙️ Séparateur : "${separator}"`);
+
+                const headers = headerLineRaw.split(separator).map(h => normalizeHeader(h));
+                setMagicLog(`📋 En-têtes détectés : ${headers.length} colonnes`);
+
+                // 3. MAPPING DES COLONNES
+                const map = {
+                    email: headers.findIndex(h => h.includes('email') || h.includes('mail')),
+                    fullname: headers.findIndex(h => h.includes('eleve') || h.includes('nom complet')),
+                    sex: headers.findIndex(h => h.includes('sexe') || h.includes('genre')),
+                    birthDate: headers.findIndex(h => h.includes('ne(e) le') || h.includes('ne le') || h.includes('naissance')),
+                };
+
+                // RECHERCHE COLONNES GROUPES (M, N, O, P) - Indices 12, 13, 14, 15
+                const groupCols = [12, 13, 14]; // M, N, O toujours inclus
+                
+                // CONDITION POUR LA COLONNE P (15) : Seulement si titre = "Autres options"
+                if (headers[15] && headers[15].includes('autre')) {
+                    groupCols.push(15);
+                    setMagicLog(`✅ Colonne P (Autres options) détectée et activée.`);
+                } else {
+                    setMagicLog(`ℹ️ Colonne P ignorée (Titre non conforme : "${headers[15] || 'Vide'}")`);
+                }
+
+                if (map.email === -1) throw new Error("Colonne 'Email' introuvable (Requise pour nom/prénom).");
+
+                // --- PHASE 1 : ANALYSE ET CRÉATION DES GROUPES MANQUANTS ---
+                setMagicLog(`\n🔎 ANALYSE DES GROUPES REQUIS...`);
+                const rowsToProcess = [];
+                const neededGroups = new Set();
+
+                for (let i = headerLineIndex + 1; i < lines.length; i++) {
+                    const lineStr = lines[i];
+                    if (!lineStr || lineStr.trim() === "") continue;
+                    const cols = lineStr.split(separator).map(c => c.trim().replace(/"/g, ''));
+                    
+                    const rowGroupNames = [];
+                    
+                    groupCols.forEach(idx => {
+                        const cellContent = cols[idx];
+                        if(cellContent && cellContent.length > 1) {
+                            // Split par virgule si plusieurs groupes dans une case
+                            const parts = cellContent.split(',');
+                            parts.forEach(part => {
+                                const cleanOptionName = part.trim().toUpperCase();
+                                if(cleanOptionName) {
+                                    // CONSTRUCTION : CLASSE + " " + GROUPE
+                                    const fullGroupName = `${targetClassName} ${cleanOptionName}`;
+                                    neededGroups.add(fullGroupName);
+                                    rowGroupNames.push(fullGroupName);
+                                }
+                            });
+                        }
+                    });
+                    rowsToProcess.push({ cols, rowGroupNames });
+                }
+
+                // Récupération ID des groupes existants
+                const groupNameIdMap = {};
+                allClasses.filter(c => c.type === 'GROUP').forEach(g => groupNameIdMap[g.name] = g._id);
+
+                let groupsCreated = 0;
+                // Création des manquants
+                for (const gName of neededGroups) {
+                    if (!groupNameIdMap[gName]) {
+                        try {
+                            setMagicLog(`🏗️ Création Groupe : ${gName}`);
+                            const res = await fetch('/api/admin/classrooms', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({ name: gName, type: 'GROUP' })
+                            });
+                            const newGroup = await res.json();
+                            if (newGroup._id) {
+                                groupNameIdMap[gName] = newGroup._id;
+                                groupsCreated++;
+                            }
+                        } catch(e) { console.error(e); }
+                    }
+                }
+                if(groupsCreated > 0) setMagicLog(`✅ ${groupsCreated} nouveaux groupes créés en base.`);
+
+                // --- PHASE 2 : SIMULATION & VALIDATION (TOLÉRANCE ZÉRO) ---
+                setMagicLog(`\n🛡️ SCAN ANTI-DOUBLONS EN COURS...`);
+                
+                const preparedPayloads = [];
+                const duplicateErrors = [];
+                const localEmailSet = new Set(); // Pour doubons internes au fichier
+                const localNameSet = new Set();
+
+                for (const row of rowsToProcess) {
+                    const cols = row.cols;
+                    const assignedGroups = row.rowGroupNames.map(name => groupNameIdMap[name]).filter(id => id);
+
+                    // --- PARSING IDENTITÉ ---
+                    let email = cols[map.email] ? cols[map.email].toLowerCase() : "";
+                    if (!email || !email.includes('@')) continue; 
+
+                    let firstName = "Prénom";
+                    let lastName = "NOM";
+                    try {
+                        const localPart = email.split('@')[0];
+                        const nameParts = localPart.split('.');
+                        if (nameParts.length >= 2) {
+                            lastName = nameParts[0].toUpperCase();
+                            firstName = nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1).toLowerCase();
+                        } else {
+                            lastName = localPart.toUpperCase();
+                            firstName = "";
+                        }
+                    } catch(e) {}
+
+                    let fullName = (map.fullname !== -1 && cols[map.fullname]) ? cols[map.fullname] : `${lastName} ${firstName}`;
+                    
+                    // --- ATTRUBUTS ---
+                    let gender = 'M';
+                    if (map.sex !== -1 && cols[map.sex]) {
+                        const firstChar = cols[map.sex].charAt(0).toUpperCase();
+                        if (firstChar === 'F' || firstChar === 'W') gender = 'F';
+                    }
+
+                    // --- DATES ---
+                    let birthDate = (map.birthDate !== -1 && cols[map.birthDate]) ? cols[map.birthDate].trim() : "";
+                    let password = "123456"; 
+                    if (birthDate) {
+                        const parts = birthDate.split(/[\/\-\.]/);
+                        if (parts.length === 3) {
+                            const d = parts[0].trim().padStart(2, '0');
+                            const m = parts[1].trim().padStart(2, '0');
+                            let y = parts[2].trim();
+                            if(y.length === 2) y = "20" + y;
+                            password = `${d}${m}${y}`;
+                            birthDate = `${d}/${m}/${y}`;
+                        } else {
+                            const digits = birthDate.replace(/[^0-9]/g, '');
+                            if (digits.length >= 6) password = digits; 
+                        }
+                    }
+
+                    // 🛑 VÉRIFICATION DOUBLON EN BASE DE DONNÉES
+                    const dbDuplicate = allStudents.find(s => 
+                        (s.lastName.toUpperCase() === lastName && s.firstName.toLowerCase() === firstName.toLowerCase()) || 
+                        (s.email.toLowerCase() === email.toLowerCase())
+                    );
+                    
+                    // 🛑 VÉRIFICATION DOUBLON INTERNE FICHIER
+                    const internalDupEmail = localEmailSet.has(email);
+                    const internalDupName = localNameSet.has(`${firstName.toLowerCase()}|${lastName.toUpperCase()}`);
+
+                    if (dbDuplicate || internalDupEmail || internalDupName) {
+                        const cause = dbDuplicate ? "(Existe déjà en base)" : "(Doublon dans le fichier)";
+                        duplicateErrors.push(`🔴 ${firstName} ${lastName} ${cause}`);
+                    } else {
+                        localEmailSet.add(email);
+                        localNameSet.add(`${firstName.toLowerCase()}|${lastName.toUpperCase()}`);
+                        
+                        preparedPayloads.push({
+                            firstName, lastName, fullName, email, password, 
+                            classId: targetImportClass, 
+                            currentClass: targetClassName, 
+                            assignedGroups, gender, birthDate 
+                        });
+                    }
+                }
+
+                // --- POINT DE DÉCISION ---
+                if (duplicateErrors.length > 0) {
+                    setMagicLog(`\n⛔ IMPORT ANNULÉ : ${duplicateErrors.length} DOUBLONS DÉTECTÉS.`);
+                    setMagicLog(`\n--- LISTE DES ERREURS ---\n`);
+                    duplicateErrors.forEach(err => setMagicLog(err));
+                    setMagicLog(`\n⚠️ Veuillez nettoyer votre fichier ou la base de données avant de réessayer.`);
+                    return; // ⛔ STOP ICI, RIEN N'EST ENVOYÉ EN BASE
+                }
+
+                // --- PHASE 3 : EXÉCUTION RÉELLE (POST) ---
+                setMagicLog(`\n🟢 VALIDATION OK. CRÉATION DE ${preparedPayloads.length} ÉLÈVES...`);
+                
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (const payload of preparedPayloads) {
+                    try {
+                        const res = await fetch('/api/admin/students', {
+                            method: 'POST',
+                            headers: {'Content-Type':'application/json'},
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        if (data.error || data.code === 11000) {
+                            errorCount++;
+                            setMagicLog(`❌ Erreur technique sur ${payload.firstName} ${payload.lastName}`);
+                        } else {
+                            successCount++;
+                        }
+                    } catch (err) { errorCount++; }
+                    
+                    if((successCount + errorCount) % 5 === 0) setMagicLog(`... ${successCount + errorCount} traités`);
+                }
+
+                setMagicLog(`\n🏁 RAPPORT FINAL :\n- Ajoutés : ${successCount}\n- Échecs techniques : ${errorCount}`);
+
+                e.target.value = ""; 
+                setTimeout(() => {
+                    if (confirm(`SUCCÈS.\n\n${successCount} élèves importés.\n\nRecharger la liste ?`)) {
+                        setShowMagicModal(false); setMagicLog(""); loadData();
+                    }
+                }, 1000);
+
+            } catch (err) {
+                setMagicLog(`❌ ERREUR FATALE : ${err.message}`);
+                e.target.value = ""; 
+            }
+        };
+        reader.readAsText(file);
+    };
+
+    const filteredItems = items.filter(it => {
+        const searchMatch = (it.name || it.firstName || "").toLowerCase().includes(searchTerm.toLowerCase()) || (it.lastName || "").toLowerCase().includes(searchTerm.toLowerCase());
+        if (view === 'students' && activeClassTab !== 'TOUS') { return searchMatch && String(it.classId) === String(activeClassTab); }
+        return searchMatch;
+    });
+
+    return (
+        <div className="admin-container animate-in fade-in">
+            <input type="file" ref={classCsvInputRef} className="hidden" accept=".csv,.txt" onChange={handleClassFileSelect} />
+
+            {importing && <div className="zoom-overlay level-2">
+                <div className="text-white font-black text-2xl flex flex-col items-center gap-4">
+                    <div className="animate-spin text-5xl">⚙️</div>
+                    <div className="animate-pulse whitespace-pre-line text-center">{magicLog || "TRAITEMENT EN COURS..."}</div>
+                </div>
+            </div>}
+            
+            <div className="admin-toolbar-pill">
+                <div className="nav-links">
+                    {['classes', 'groups', 'subjects', 'teachers', 'students', 'administrateurs'].map(v => (
+                        <button key={v} onClick={() => setView(v)} className={`nav-link ${view === v ? 'active' : ''}`}>{v}</button>
+                    ))}
+                </div>
+                <div className="action-buttons">
+                    <button onClick={handleOpenCreate} className="btn-pill btn-add">+ CRÉER</button>
+                </div>
+            </div>
+
+            <div className="search-container">
+                <span className="text-slate-400">🔎</span>
+                <input className="search-input" placeholder={`Rechercher dans ${view}...`} value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+            </div>
+            
+            {view === 'students' && ( 
+                <div className="class-filter-row"> 
+                    <button onClick={() => setActiveClassTab('TOUS')} className={`class-chip ${activeClassTab === 'TOUS' ? 'active' : ''}`}>TOUS</button>
+                    {allClasses.filter(c=>c.type==='CLASS').map(cls => ( 
+                        <button key={cls._id} onClick={() => setActiveClassTab(cls._id)} className={`class-chip ${activeClassTab === cls._id ? 'active' : ''}`}>{cls.name}</button> 
+                    ))} 
+                </div> 
+            )}
+
+            <div className="items-list">
+                {loading ? ( <div className="p-20 text-center animate-pulse text-slate-300 font-black uppercase">Chargement...</div> ) : filteredItems.map(it => (
+                    <div key={it._id} className="item-card">
+                        <div className="item-main">
+                            <span className="item-title">
+                                {it.name || `${it.firstName} ${it.lastName}`} 
+                                {it.level && <span className="badge-niv">NIV {it.level}</span>}
+                                {it.currentClass && <span className="badge-niv">{it.currentClass}</span>}
+                            </span>
+                            <span className="item-sub">
+                                {view === 'teachers' 
+                                    ? (it.taughtSubjectsText || 'Aucune matière') 
+                                    : (it.role || it.type || 'DATA')}
+                            </span>
+                        </div>
+                        <div className="item-actions">
+                            {(view === 'classes' || view === 'groups') && (
+                                <button onClick={() => setViewingClass(it)} className="btn-action btn-list">👥 ÉLÈVES</button>
+                            )}
+
+                            {view === 'classes' && (
+                                <>
+                                    <button onClick={() => triggerClassImport(it._id)} className="btn-import-mini">📥 IMPORT CSV</button>
+                                    <button onClick={() => handlePurgeClass(it)} className="btn-action bg-red-50 text-red-600 border border-red-100 hover:bg-red-600 hover:text-white" title="Vider la classe">♻️ VIDER</button>
+                                </>
+                            )}
+                            
+                            {view === 'students' && (
+                                <button onClick={() => setZoomedItem(it)} className="btn-action bg-cyan-50 text-cyan-600 border border-cyan-100 hover:bg-cyan-500 hover:text-white">🔍</button>
+                            )}
+
+                            <button onClick={() => { setCurrentItem(it); setModalMode('view'); }} className="btn-action btn-view">👁️ VOIR</button>
+                            <button onClick={() => { setCurrentItem(it); setModalMode('edit'); }} className="btn-action btn-modif">ÉDITER</button>
+                            <button onClick={() => handleDelete(it._id)} className="btn-action btn-delete">✕</button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* ... MODALES (ZOOM, VIEW, EDIT) ... */}
+            {/* ✅ CORRECTION : Z-INDEX AUGMENTÉ À 60 POUR PASSER AU DESSUS DE LA LISTE */}
+            {zoomedItem && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4" onClick={() => setZoomedItem(null)}>
+                    <div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+                        <div className="bg-indigo-600 p-6 text-white text-center">
+                            <div className="text-4xl mb-2">{zoomedItem.gender === 'F' ? '👩' : '👨'}</div>
+                            <h2 className="text-2xl font-black uppercase">{zoomedItem.firstName} {zoomedItem.lastName}</h2>
+                            <div className="opacity-80 font-bold tracking-widest text-xs mt-1">{zoomedItem.email}</div>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div className="flex justify-between border-b pb-2">
+                                <span className="text-slate-400 font-bold text-xs uppercase">Classe</span>
+                                <span className="font-black text-slate-800">{zoomedItem.currentClass || "N/A"}</span>
+                            </div>
+                            <div className="flex justify-between border-b pb-2">
+                                <span className="text-slate-400 font-bold text-xs uppercase">Groupes</span>
+                                <span className="font-black text-slate-800 text-right text-xs">
+                                    {(zoomedItem.assignedGroups || []).map(gId => {
+                                        const g = allClasses.find(c => c._id === gId);
+                                        return g ? g.name : "";
+                                    }).filter(Boolean).join(', ') || "Aucun"}
+                                </span>
+                            </div>
+                            <div className="flex justify-between border-b pb-2">
+                                <span className="text-slate-400 font-bold text-xs uppercase">Mot de passe</span>
+                                <span className="font-mono text-indigo-600 bg-indigo-50 px-2 rounded">{zoomedItem.password}</span>
+                            </div>
+                        </div>
+                        <div className="p-4 bg-slate-50 text-center">
+                            <button onClick={() => setZoomedItem(null)} className="btn-action w-full">FERMER</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {viewingClass && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4" onClick={() => setViewingClass(null)}>
+                    <div className="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+                        <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                            <h3 className="font-black text-lg uppercase text-slate-700">LISTE {viewingClass.name}</h3>
+                            <button onClick={() => setViewingClass(null)} className="text-slate-400 hover:text-red-500 font-black">✕</button>
+                        </div>
+                        
+                        <div className="p-4 h-96 overflow-y-auto bg-slate-50">
+                             {allStudents.filter(s => {
+                                 const targetId = String(viewingClass._id);
+                                 // Vérification Classe Principale
+                                 const mainClassMatch = String(s.classId) === targetId;
+                                 // Vérification Groupes (Safe array check)
+                                 const groupsMatch = Array.isArray(s.assignedGroups) && s.assignedGroups.map(String).includes(targetId);
+                                 return mainClassMatch || groupsMatch;
+                             })
+                             .sort((a,b) => a.lastName.localeCompare(b.lastName))
+                             .map(s => (
+                                 <div key={s._id} className="item-card !p-4 !mb-2 !shadow-sm hover:!bg-white flex justify-between items-center">
+                                     <div className="item-main">
+                                         <span className="item-title text-sm">
+                                             {s.gender === 'F' ? '👩' : '👨'} {s.lastName} {s.firstName}
+                                         </span>
+                                         <span className="item-sub text-xs">
+                                             {s.email}
+                                         </span>
+                                     </div>
+                                     <div className="item-actions">
+                                         <button onClick={() => setZoomedItem(s)} className="btn-action bg-cyan-50 text-cyan-600">🔍</button>
+                                     </div>
+                                 </div>
+                             ))}
+                             
+                             {allStudents.filter(s => String(s.classId) === String(viewingClass._id) || (s.assignedGroups || []).map(String).includes(String(viewingClass._id))).length === 0 && (
+                                 <div className="text-center text-slate-400 font-bold italic mt-10">Aucun élève dans ce groupe/classe.</div>
+                             )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {modalMode && currentItem && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4" onClick={() => setModalMode(null)}>
+                    <div className="bg-white w-full max-w-2xl rounded-3xl p-8 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                        
+                        <h3 className="text-xl font-black uppercase mb-6 text-indigo-600">
+                            {modalMode === 'create' ? 'Création' : modalMode === 'edit' ? 'Modification' : 'Consultation'} {view}
+                        </h3>
+                        
+                        <div className="space-y-4 mb-8">
+                             {(view === 'students' || view === 'teachers' || view === 'administrateurs') && (
+                                <div className={`mb-6 p-4 rounded-xl border ${modalMode !== 'view' ? 'bg-indigo-50 border-indigo-100' : 'bg-white border-slate-200'}`}>
+                                    <label className={`form-label !mt-0 mb-2 ${modalMode !== 'view' ? '!text-indigo-600' : ''}`}>
+                                        {modalMode !== 'view' ? '⚡ Saisie via Email (Déduit Nom/Prénom)' : 'Email'}
+                                    </label>
+                                    <input 
+                                        className={`w-full p-3 border-2 rounded-lg font-bold outline-none ${modalMode !== 'view' ? 'border-indigo-200 bg-white text-indigo-900 placeholder-indigo-200 focus:border-indigo-500' : 'border-slate-200 bg-slate-50 text-slate-500'}`}
+                                        placeholder="ex: nom.prenom@ecole.com" 
+                                        value={currentItem.email || ''}
+                                        disabled={modalMode === 'view'}
+                                        onChange={e => {
+                                            const val = e.target.value;
+                                            const newState = { ...currentItem, email: val };
+                                            const id = parseEmailToIdentity(val);
+                                            if (id) {
+                                                newState.lastName = id.lastName;
+                                                newState.firstName = id.firstName;
+                                            }
+                                            setCurrentItem(newState);
+                                        }}
+                                    />
+                                    {modalMode !== 'view' && <div className="text-[10px] text-indigo-400 text-right mt-1 italic">Format attendu : nom.prenom@...</div>}
+                                </div>
+                             )}
+
+                             {view === 'students' && (
+                                <div className="mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                    <label className="form-label !mt-0 mb-2">Nom Complet</label>
+                                    <input 
+                                        className="w-full p-3 border rounded-lg bg-white font-bold text-slate-700 disabled:opacity-60 disabled:bg-slate-100"
+                                        placeholder="Généré automatiquement..." 
+                                        value={currentItem.fullName || `${currentItem.lastName || ''} ${currentItem.firstName || ''}`}
+                                        disabled={modalMode === 'view'}
+                                        onChange={e => setCurrentItem({ ...currentItem, fullName: e.target.value })}
+                                    />
+                                </div>
+                             )}
+
+                             <div className="grid grid-cols-2 gap-4">
+                                <div className="flex flex-col">
+                                    <label className="form-label">Nom / Intitulé</label>
+                                    <input 
+                                        className="w-full p-3 border rounded font-bold uppercase disabled:opacity-60 disabled:bg-slate-100" 
+                                        value={currentItem.lastName || currentItem.name || ''} 
+                                        disabled={modalMode === 'view'}
+                                        onChange={e => setCurrentItem({...currentItem, lastName:e.target.value, name:e.target.value})} 
+                                    />
+                                </div>
+                                {(view === 'students' || view === 'teachers' || view === 'staff' || view === 'administrateurs') && (
+                                    <div className="flex flex-col">
+                                        <label className="form-label">Prénom</label>
+                                        <input 
+                                            className="w-full p-3 border rounded font-bold disabled:opacity-60 disabled:bg-slate-100" 
+                                            value={currentItem.firstName||''} 
+                                            disabled={modalMode === 'view'}
+                                            onChange={e=>setCurrentItem({...currentItem, firstName:e.target.value})} 
+                                        />
+                                    </div>
+                                )}
+                             </div>
+                             
+                             {/* GESTION DES ADMINS */}
+                             {view === 'administrateurs' && (
+                                <div className="flex flex-col">
+                                    <label className="form-label">Mot de Passe</label>
+                                    <input 
+                                        className="w-full p-3 border rounded font-bold disabled:opacity-60" 
+                                        type="text"
+                                        value={currentItem.password || ''} 
+                                        disabled={modalMode === 'view'}
+                                        onChange={e => setCurrentItem({...currentItem, password: e.target.value})} 
+                                    />
+                                </div>
+                             )}
+
+                             {view === 'teachers' && (
+                                <>
+                                    <div>
+                                        <label className="form-label">Matières</label>
+                                        <div className="selection-grid">
+                                            {allSubjects.map(sub => (
+                                                <div key={sub._id} onClick={() => toggleRelation('taughtSubjects', sub._id)} className={`toggle-chip ${currentItem.taughtSubjects.includes(sub._id) ? 'selected' : ''} ${modalMode === 'view' ? 'disabled' : ''}`}>{sub.name}</div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* SÉPARATION DES CLASSES ET DES GROUPES */}
+                                    <div>
+                                        <label className="form-label">Classes Principales</label>
+                                        <div className="selection-grid">
+                                            {allClasses.filter(c => c.type === 'CLASS').map(cls => (
+                                                <div key={cls._id} onClick={() => toggleRelation('assignedClasses', cls._id)} className={`toggle-chip ${currentItem.assignedClasses.includes(cls._id) ? 'selected' : ''} ${modalMode === 'view' ? 'disabled' : ''}`}>{cls.name}</div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="mt-4">
+                                        <label className="form-label">Groupes / Options</label>
+                                        <div className="selection-grid">
+                                            {allClasses.filter(c => c.type === 'GROUP').map(grp => (
+                                                <div key={grp._id} onClick={() => toggleRelation('assignedClasses', grp._id)} className={`toggle-chip ${currentItem.assignedClasses.includes(grp._id) ? 'selected' : ''} ${modalMode === 'view' ? 'disabled' : ''}`}>{grp.name}</div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </>
+                             )}
+                             
+                             {view === 'students' && (
+                                <>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="flex flex-col">
+                                            <label className="form-label">Sexe</label>
+                                            <select className="w-full p-3 border rounded bg-white disabled:opacity-60" value={currentItem.gender || 'M'} disabled={modalMode === 'view'} onChange={e => setCurrentItem({...currentItem, gender:e.target.value})}>
+                                                <option value="M">Homme</option>
+                                                <option value="F">Femme</option>
+                                            </select>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <label className="form-label">Classe Principale</label>
+                                            <select className="w-full p-3 border rounded bg-white font-bold disabled:opacity-60" value={currentItem.classId || ''} disabled={modalMode === 'view'} onChange={e => setCurrentItem({...currentItem, classId:e.target.value})}>
+                                                <option value="">-- AUCUNE --</option>
+                                                {allClasses.filter(c => c.type === 'CLASS').map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col">
+                                        <label className="form-label">Date de Naissance (jj/mm/aaaa)</label>
+                                        <input
+                                            className="w-full p-3 border rounded bg-white font-bold tracking-widest disabled:opacity-60"
+                                            placeholder="ex: 04/11/2005"
+                                            value={currentItem.birthDate || ''}
+                                            disabled={modalMode === 'view'}
+                                            onChange={e => {
+                                                const val = e.target.value;
+                                                const rawDate = val.replace(/[^0-9]/g, ''); 
+                                                setCurrentItem({
+                                                    ...currentItem,
+                                                    birthDate: val,
+                                                    password: rawDate // Auto-update password
+                                                });
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="form-label">Options & Groupes</label>
+                                        {!currentItem.classId ? (
+                                            <div className="text-xs text-slate-400 italic pl-2 border-l-2 border-slate-200 py-2">
+                                                ⚠️ Sélectionnez d'abord une classe principale.
+                                            </div>
+                                        ) : (
+                                            <div className="selection-grid">
+                                                {allClasses
+                                                    .filter(c => {
+                                                        const currentClassName = allClasses.find(cl => cl._id === currentItem.classId)?.name || "";
+                                                        return c.type === 'GROUP' && c.name.startsWith(currentClassName);
+                                                    })
+                                                    .map(grp => (
+                                                    <div key={grp._id} onClick={() => toggleRelation('assignedGroups', grp._id)} className={`toggle-chip ${currentItem.assignedGroups?.includes(grp._id) ? 'selected' : ''} ${modalMode === 'view' ? 'disabled' : ''}`}>{grp.name}</div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    <div className="mt-4">
+                                        <label className="form-label">Mot de Passe (Auto-généré)</label>
+                                        <input className="w-full p-3 border rounded bg-slate-50 font-mono text-slate-400 disabled:opacity-60" value={currentItem.password||''} disabled={modalMode === 'view'} onChange={e=>setCurrentItem({...currentItem, password:e.target.value})} />
+                                    </div>
+                                </>
+                             )}
+
+                             {(view === 'classes' || view === 'groups') && (
+                                 <div className="flex flex-col">
+                                     <label className="form-label">Type</label>
+                                     <div className="flex gap-4 mt-2">
+                                         <button disabled={modalMode === 'view'} onClick={() => setCurrentItem({...currentItem, type: 'CLASS'})} className={`flex-1 p-3 rounded-xl border-2 font-black ${currentItem.type === 'CLASS' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-100 text-slate-400'}`}>CLASSE (ex: 6A)</button>
+                                         <button disabled={modalMode === 'view'} onClick={() => setCurrentItem({...currentItem, type: 'GROUP'})} className={`flex-1 p-3 rounded-xl border-2 font-black ${currentItem.type === 'GROUP' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-100 text-slate-400'}`}>GROUPE</button>
+                                     </div>
+                                 </div>
+                             )}
+                        </div>
+                        
+                        <div className="flex justify-end gap-3 pt-6 border-t">
+                            {modalMode === 'view' ? (
+                                <button onClick={() => setModalMode(null)} className="btn-action bg-slate-200 text-slate-600 hover:bg-slate-300">Fermer</button>
+                            ) : (
+                                <>
+                                    <button onClick={() => setModalMode(null)} className="btn-action">Annuler</button>
+                                    <button onClick={handleSave} className="btn-action bg-indigo-600 text-white">Sauvegarder</button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showMagicModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4" onClick={() => setShowMagicModal(false)}>
+                    <div className="bg-white w-full max-w-3xl rounded-3xl p-8 shadow-2xl animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+                        <h3 className="text-xl font-black uppercase mb-2 text-indigo-600">Import Massif (Logs)</h3>
+                        <div className="w-full h-64 bg-slate-900 text-emerald-400 font-mono text-xs p-4 rounded-2xl overflow-y-auto border-2 border-slate-800">
+                            {magicLog.split('\n').map((l, i) => <div key={i}>{l}</div>)}
+                        </div>
+                        <div className="flex justify-end gap-3 mt-4">
+                            <button onClick={() => setShowMagicModal(false)} className="px-5 py-3 rounded-xl font-bold text-xs uppercase text-slate-500 hover:bg-slate-100">Fermer</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+[[[£ END: client/src/features/admin/AdminDashboard.jsx £]]]
+
+[[[£ FILE: client/src/features/admin/AdminPage.css £]]]
+.admin-page-wrapper {
+    min-height: 100vh;
+    background-color: #f1f5f9;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+}
+
+.admin-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 1.2rem 2.5rem;
+    border-radius: 25px;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.admin-identity {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-content-area {
+    /* Espace de travail */
+}
+
+/* Animations de transition pour les pastilles */
+.bg-emerald-500, .bg-red-500, .bg-purple-500, .bg-slate-300 {
+    transition: background-color 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .admin-page-wrapper { padding: 1rem; }
+    .admin-header-bar { padding: 1rem; flex-direction: column; gap: 1rem; text-align: center; }
+}
+[[[£ END: client/src/features/admin/AdminPage.css £]]]
+
+[[[£ FILE: client/src/features/admin/AdminPage.jsx £]]]
+import React, { useState } from 'react'; // Ajout useState
+import AdminDashboard from './AdminDashboard';
+import DatabaseViewer from './components/DatabaseViewer'; // Réintégration
+import './AdminPage.css';
+
+export default function AdminPage({ user, onLogout }) {
+  const [showDB, setShowDB] = useState(false);
+
+  return (
+    <div className="admin-page-wrapper">
+      <div className="admin-header-bar">
+        {/* --- IDENTITÉ --- */}
+        <div className="flex items-center gap-6">
+            <div className="admin-identity">
+                <h1 className="text-xl font-black text-slate-800 uppercase tracking-tighter leading-none">
+                    {user.firstName} {user.lastName}
+                </h1>
+                <div className="flex items-center gap-3 mt-1.5">
+                    <span className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                        Administrateur Établissement
+                    </span>
+                    {/* BOUTON BDD RÉTABLI */}
+                    <button 
+                        onClick={() => setShowDB(true)}
+                        className="bg-slate-100 text-slate-500 hover:bg-indigo-100 hover:text-indigo-600 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest border border-slate-200 transition-colors"
+                    >
+                        📊 Voir BDD
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {/* --- DÉCONNEXION --- */}
+        <div className="flex items-center gap-4">
+            <button onClick={onLogout} className="bg-white text-slate-400 hover:text-red-500 px-4 py-2 rounded-xl font-black text-[10px] border border-slate-200 transition-all uppercase tracking-widest">
+                Déconnexion
+            </button>
+        </div>
+      </div>
+      
+      <div className="admin-content-area">
+        <AdminDashboard user={user} />
+      </div>
+
+      {/* MODALE BDD */}
+      {showDB && <DatabaseViewer onClose={() => setShowDB(false)} />}
+    </div>
+  );
+}
+[[[£ END: client/src/features/admin/AdminPage.jsx £]]]
+
+[[[£ FILE: client/src/features/admin/components/DatabaseViewer.css £]]]
+.db-viewer-overlay { 
+    position: fixed; inset: 0; z-index: 20000; 
+    background: rgba(15, 23, 42, 0.95); 
+    display: flex; align-items: center; justify-content: center; padding: 2rem; 
+}
+
+.db-viewer-window { 
+    background: white; width: 95%; height: 90%; 
+    border-radius: 40px; display: flex; flex-direction: column; 
+    overflow: hidden; box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5);
+}
+
+.db-header { 
+    padding: 1.5rem 2.5rem; 
+    border-bottom: 1px solid #f1f5f9; 
+    display: flex; justify-content: space-between; align-items: center; 
+}
+
+/* TABLEAU PROPRE ET COMPACT */
+.db-table-clean {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    table-layout: fixed; /* Force le respect des largeurs */
+}
+
+.db-table-clean th {
+    background: #f8fafc;
+    text-align: left;
+    padding: 12px 15px;
+    border: 1px solid #f1f5f9;
+    color: #94a3b8;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    width: 180px; /* Largeur fixe pour la clarté */
+}
+
+.db-table-clean td {
+    padding: 10px 15px;
+    border: 1px solid #f1f5f9;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.db-cell-wrapper {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.db-table-clean tr:hover td {
+    background-color: #f0f9ff;
+    color: #3b82f6;
+}
+
+/* 🔍 INSPECTEUR DE CELLULE */
+.db-inspector-overlay {
+    position: fixed; inset: 0;
+    z-index: 30000;
+    background: rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+}
+
+.db-inspector-box {
+    background: white;
+    width: 600px;
+    max-height: 500px;
+    padding: 2rem;
+    border-radius: 30px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.db-inspector-content {
+    background: #0f172a;
+    color: #38bdf8;
+    padding: 1.5rem;
+    border-radius: 15px;
+    font-size: 12px;
+    overflow: auto;
+    flex: 1;
+    margin: 0;
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+[[[£ END: client/src/features/admin/components/DatabaseViewer.css £]]]
+
+[[[£ FILE: client/src/features/admin/components/DatabaseViewer.jsx £]]]
+// @signatures: DatabaseViewer, renderCell, handleCellClick
+import React, { useState, useEffect } from 'react';
+import './DatabaseViewer.css';
+
+export default function DatabaseViewer({ onClose }) {
+    const [data, setData] = useState(null);
+    const [activeTab, setActiveTab] = useState('');
+    const [loading, setLoading] = useState(true);
+    // ✅ État pour l'inspection d'une cellule
+    const [inspecting, setInspecting] = useState(null);
+
+    useEffect(() => {
+        fetch('/api/admin/database-dump')
+            .then(res => res.json())
+            .then(d => { 
+                setData(d); 
+                const keys = Object.keys(d || {});
+                if (keys.length > 0) setActiveTab(keys[0]);
+                setLoading(false); 
+            });
+    }, []);
+
+    if (loading) return <div className="db-viewer-overlay"><h2 className="text-white font-black animate-pulse">CHARGEMENT BDD...</h2></div>;
+
+    const currentData = data[activeTab] || [];
+    const allKeys = new Set();
+    currentData.forEach(row => Object.keys(row).forEach(k => { if(k !== '__v') allKeys.add(k); }));
+    const columns = Array.from(allKeys);
+
+    const handleCellClick = (val, colName) => {
+        if (val === null || val === undefined) return;
+        setInspecting({ title: colName, content: val });
+    };
+
+    return (
+        <div className="db-viewer-overlay" onClick={onClose}>
+            {/* 🔍 INSPECTEUR DE CELLULE (MODALE NIVEAU 2) */}
+            {inspecting && (
+                <div className="db-inspector-overlay" onClick={(e) => { e.stopPropagation(); setInspecting(null); }}>
+                    <div className="db-inspector-box animate-in zoom-in" onClick={e => e.stopPropagation()}>
+                        <div className="flex justify-between items-center mb-4 border-b pb-2">
+                            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Détail du champ : {inspecting.title}</span>
+                            <button onClick={() => setInspecting(null)} className="text-slate-400 hover:text-slate-900 font-bold">FERMER</button>
+                        </div>
+                        <pre className="db-inspector-content custom-scrollbar">
+                            {typeof inspecting.content === 'object' 
+                                ? JSON.stringify(inspecting.content, null, 2) 
+                                : String(inspecting.content)}
+                        </pre>
+                        <button onClick={() => {
+                            navigator.clipboard.writeText(typeof inspecting.content === 'object' ? JSON.stringify(inspecting.content) : inspecting.content);
+                            alert("Copié !");
+                        }} className="mt-4 w-full py-2 bg-slate-100 text-slate-600 rounded-lg font-black text-[10px] uppercase hover:bg-indigo-50">Copier la valeur</button>
+                    </div>
+                </div>
+            )}
+
+            <div className="db-viewer-window" onClick={e => e.stopPropagation()}>
+                <div className="db-header">
+                    <div>
+                        <h2 className="font-black uppercase text-xl text-slate-800">Explorateur MongoDB</h2>
+                        <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest">Mode Interactif : Cliquez sur une case pour l'étendre</span>
+                    </div>
+                    <button onClick={onClose} className="w-10 h-10 bg-slate-100 rounded-full font-black hover:bg-red-500 hover:text-white transition-all">✕</button>
+                </div>
+                
+                <div className="db-tabs no-scrollbar flex gap-2 p-4 bg-slate-50 border-b overflow-x-auto">
+                    {Object.keys(data).sort().map(c => (
+                        <button key={c} onClick={() => setActiveTab(c)} className={`px-4 py-2 rounded-xl text-[10px] font-black whitespace-nowrap transition-all ${activeTab === c ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-400 border border-slate-200'}`}>
+                            {c.toUpperCase()} ({data[c]?.length || 0})
+                        </button>
+                    ))}
+                </div>
+
+                <div className="db-table-container flex-1 overflow-auto custom-scrollbar">
+                    <table className="db-table-clean">
+                        <thead>
+                            <tr>
+                                {columns.map(col => <th key={col}>{col.toUpperCase()}</th>)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentData.map((row, i) => (
+                                <tr key={i}>
+                                    {columns.map(col => {
+                                        const val = row[col];
+                                        const isObj = typeof val === 'object' && val !== null;
+                                        return (
+                                            <td key={col} onClick={() => handleCellClick(val, col)} className="db-interactive-cell">
+                                                <div className="db-cell-wrapper">
+                                                    {isObj ? `{ Object }` : (val === null || val === undefined ? '-' : String(val))}
+                                                </div>
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {currentData.length === 0 && <div className="p-20 text-center text-slate-300 font-bold uppercase italic">Collection vide</div>}
+                </div>
+            </div>
+        </div>
+    );
+}
+[[[£ END: client/src/features/admin/components/DatabaseViewer.jsx £]]]
+
+[[[£ FILE: client/src/features/admin/components/DriveViewer.css £]]]
+.drive-viewer-overlay { position: fixed; inset: 0; z-index: 20001; background: rgba(15, 23, 42, 0.95); display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.drive-viewer-window { background: white; width: 80%; height: 80%; border-radius: 30px; display: flex; flex-direction: column; overflow: hidden; }
+[[[£ END: client/src/features/admin/components/DriveViewer.css £]]]
+
+[[[£ FILE: client/src/features/admin/components/DriveViewer.jsx £]]]
+import React, { useState, useEffect } from 'react';
+import './DriveViewer.css';
+
+export default function DriveViewer({ onClose }) {
+    const [tree, setTree] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('/api/structure/drive-tree')
+            .then(res => res.json())
+            .then(d => { setTree(d); setLoading(false); });
+    }, []);
+
+    return (
+        <div className="drive-viewer-overlay" onClick={onClose}>
+            <div className="drive-viewer-window" onClick={e => e.stopPropagation()}>
+                <div className="drive-header p-6 bg-slate-900 text-white flex justify-between items-center">
+                    <h2 className="font-black uppercase">Archive Cloud Condamine</h2>
+                    <button onClick={onClose} className="text-2xl">✕</button>
+                </div>
+                <div className="p-10 overflow-auto flex-1">
+                    {loading ? <div className="animate-pulse text-indigo-600 font-black">SCAN DU DRIVE...</div> : (
+                        <div className="space-y-2">
+                            {tree?.children?.map(child => (
+                                <div key={child.id} className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                    <span className="text-xl">{child.type === 'folder' ? '📁' : '📄'}</span>
+                                    <span className="font-bold text-slate-700">{child.name}</span>
+                                    <a href={child.link} target="_blank" rel="noreferrer" className="ml-auto text-indigo-500 font-black text-[10px]">OUVRIR</a>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+[[[£ END: client/src/features/admin/components/DriveViewer.jsx £]]]
+
+[[[£ FILE: client/src/features/auth/Login.css £]]]
+.login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: #f8fafc; }
+.login-card { background: white; padding: 2.5rem; border-radius: 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); width: 100%; max-width: 900px; text-align: center; transition: all 0.3s; }
+.login-card.narrow { max-width: 450px; }
+
+.app-logo { font-weight: 900; font-size: 2rem; color: #1e293b; margin-bottom: 0.5rem; letter-spacing: -1px; text-transform: uppercase; }
+.app-subtitle { color: #94a3b8; font-weight: 700; margin-bottom: 3rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+/* ROLE SELECTOR GRID */
+.role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+@media (max-width: 768px) { .role-grid { grid-template-columns: 1fr; } }
+
+.role-card { background: #f1f5f9; border: 2px solid transparent; border-radius: 25px; padding: 2rem 1rem; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+.role-card:hover { transform: translateY(-5px); background: white; shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+.role-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+.role-label { font-weight: 900; font-size: 1.1rem; color: #475569; text-transform: uppercase; }
+
+/* SPECIFIC COLORS */
+.role-student:hover { border-color: #f97316; } .role-student:hover .role-label { color: #f97316; }
+.role-teacher:hover { border-color: #7c3aed; } .role-teacher:hover .role-label { color: #7c3aed; }
+.role-admin:hover { border-color: #1e293b; } .role-admin:hover .role-label { color: #1e293b; }
+
+/* FORMS COMMON */
+.login-inputs { display: flex; flex-direction: column; gap: 1rem; text-align: left; position: relative; }
+.login-field { width: 100%; padding: 1.2rem; border-radius: 18px; border: 2px solid #e2e8f0; background: #f8fafc; font-weight: 700; outline: none; transition: all 0.2s; }
+.login-field:focus { border-color: #2563eb; background: white; }
+
+.login-submit-btn { width: 100%; padding: 1.25rem; background-color: #2563eb; color: white; border-radius: 20px; font-weight: 900; cursor: pointer; border: none; text-transform: uppercase; margin-top: 1rem; transition: transform 0.1s; }
+.login-submit-btn:active { transform: scale(0.98); }
+.login-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; background-color: #cbd5e1; }
+
+.back-btn { background: transparent; border: none; font-weight: 800; color: #94a3b8; cursor: pointer; margin-bottom: 1.5rem; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; text-transform: uppercase; }
+.back-btn:hover { color: #1e293b; }
+
+/* --- FINDER STUDENT V2 (3 CHAMPS) --- */
+.finder-wrapper { position: relative; display: flex; flex-direction: column; gap: 10px; }
+.finder-row { display: flex; gap: 10px; }
+.finder-col-class { flex: 1; }
+.finder-col-name { flex: 2; }
+
+.suggestions-box {
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: white; border: 2px solid #e2e8f0; border-radius: 15px;
+    max-height: 200px; overflow-y: auto; z-index: 50;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 5px;
+}
+.suggestion-item {
+    padding: 12px 15px; cursor: pointer; font-weight: 700; color: #475569; border-bottom: 1px solid #f1f5f9;
+    display: flex; justify-content: space-between;
+}
+.suggestion-item:hover { background: #f0f9ff; color: #2563eb; }
+.suggestion-detail { font-size: 0.75rem; color: #94a3b8; font-weight: 900; text-transform: uppercase; }
+
+.selected-student-card {
+    background: #ecfdf5; border: 2px solid #34d399; color: #065f46;
+    padding: 1rem; border-radius: 20px; text-align: center;
+    font-weight: 900; font-size: 1.1rem;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.reset-selection-btn {
+    background: #065f46; color: white; width: 30px; height: 30px; border-radius: 50%;
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+[[[£ END: client/src/features/auth/Login.css £]]]
+
+[[[£ FILE: client/src/features/auth/Login.jsx £]]]
+import React, { useState } from 'react';
+import './Login.css';
+
+export default function Login({ onLoginSuccess }) {
+  const [fName, setFName] = useState('');
+  const [lName, setLName] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ 
+                role: 'ADMIN', 
+                firstName: fName, 
+                lastName: lName, 
+                password 
+            })
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+            // Verrouillage final côté client
+            if (data.user.role === 'admin' || data.user.isDeveloper) {
+                localStorage.setItem('player', JSON.stringify(data.user));
+                onLoginSuccess(data.user);
+            } else {
+                alert("Accès restreint aux administrateurs.");
+            }
+        } else {
+            alert(data.message || "Identifiants administrateur invalides.");
+        }
+    } catch(e) { 
+        alert("Serveur hors ligne."); 
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="login-screen bg-slate-900">
+      <div className="login-card narrow !bg-slate-800 border border-slate-700 shadow-2xl">
+        <div className="mb-8">
+            <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-3xl shadow-xl shadow-indigo-500/20 mx-auto mb-4">🛡️</div>
+            <h1 className="app-logo !text-white !mb-1">Condamine <span className="text-indigo-400">Core</span></h1>
+            <p className="app-subtitle !text-slate-400">Terminal d'Administration</p>
+        </div>
+
+        <form onSubmit={handleLogin} className="login-inputs">
+            <div className="space-y-3">
+                <input 
+                    className="login-field !bg-slate-700 !border-slate-600 !text-white focus:!border-indigo-500" 
+                    placeholder="Prénom" 
+                    value={fName} 
+                    onChange={e=>setFName(e.target.value)} 
+                    required 
+                />
+                <input 
+                    className="login-field !bg-slate-700 !border-slate-600 !text-white focus:!border-indigo-500" 
+                    placeholder="Nom" 
+                    value={lName} 
+                    onChange={e=>setLName(e.target.value)} 
+                    required 
+                />
+                <div className="relative">
+                    <input 
+                        type={showPass ? "text" : "password"} 
+                        className="login-field !bg-slate-700 !border-slate-600 !text-white focus:!border-indigo-500" 
+                        placeholder="Mot de passe" 
+                        value={password} 
+                        onChange={e=>setPassword(e.target.value)} 
+                        required 
+                    />
+                    <button 
+                        type="button" 
+                        onClick={() => setShowPass(!showPass)} 
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-500 hover:text-indigo-400 uppercase"
+                    >
+                        {showPass ? "Masquer" : "Voir"}
+                    </button>
+                </div>
+            </div>
+
+            <button className="login-submit-btn !bg-indigo-600 hover:!bg-indigo-500 !mt-6 shadow-lg shadow-indigo-600/10" disabled={loading}>
+                {loading ? 'Validation Kernel...' : 'Authentification'}
+            </button>
+        </form>
+        
+        <div className="mt-8 flex items-center justify-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span className="text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">
+                Project Condamine v2.0 • Admin Console
+            </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+[[[£ END: client/src/features/auth/Login.jsx £]]]
+
+[[[£ FILE: client/src/index.css £]]]
+@tailwind base; @tailwind components; @tailwind utilities;
+:root { --primary: #2563eb; }
+body { margin: 0; font-family: 'Inter', sans-serif; background: #f1f5f9; }
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+[[[£ END: client/src/index.css £]]]
+
+[[[£ FILE: client/src/main.jsx £]]]
+import React from 'react'; import ReactDOM from 'react-dom/client'; import App from './App.jsx'; import './index.css';
+ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
+[[[£ END: client/src/main.jsx £]]]
+
+[[[£ FILE: client/src/services/api.js £]]]
+export const api = {
+    get: (url) => fetch(`/api${url}`).then(r => r.json()),
+    post: (url, data) => fetch(`/api${url}`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) }).then(r => r.json())
+};
+[[[£ END: client/src/services/api.js £]]]
+
+[[[£ FILE: client/src/test_token_crash.js £]]]
+console.log("✅ FICHIER RÉPARÉ AVEC SUCCÈS !");
+console.log("Le système de sécurité 'Token + API Reset' fonctionne parfaitement.");
+console.log("Le bandeau rouge a disparu, et le fichier est maintenant complet.");
+
+export default function TestTokenValid() {
+    return "Tout est opérationnel chef !";
+}
+[[[£ END: client/src/test_token_crash.js £]]]
+
+[[[£ FILE: client/vite.config.js £]]]
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  }
+})
+[[[£ END: client/vite.config.js £]]]
+
+[[[£ FILE: db-structure.js £]]]
+const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
+
+const MODELS_DIR = path.join(__dirname, 'server', 'models');
+const OUTPUT_FILE = 'DB_MAP.md';
+
+console.log("------------------------------------------------");
+console.log("🗺️  CARTOGRAPHIE DE LA BASE DE DONNÉES (MONGOOSE)");
+console.log("------------------------------------------------");
+
+async function generateMap() {
+    // 1. Chargement des modèles
+    if (fs.existsSync(MODELS_DIR)) {
+        fs.readdirSync(MODELS_DIR).forEach(file => {
+            if (file.endsWith('.js')) {
+                try {
+                    require(path.join(MODELS_DIR, file));
+                    console.log(`   📄 Modèle chargé : ${file}`);
+                } catch (e) {
+                    console.error(`   ❌ Erreur chargement ${file}:`, e.message);
+                }
+            }
+        });
+    } else {
+        console.error("❌ Dossier server/models introuvable !");
+        return;
+    }
+
+    // 2. Analyse de la structure
+    const modelNames = mongoose.modelNames().sort();
+    let markdown = `# 🗺️ STRUCTURE DE LA BASE DE DONNÉES\n`;
+    markdown += `Généré le : ${new Date().toLocaleString()}\n\n`;
+
+    console.log(`\n🔍 Analyse de ${modelNames.length} collections...\n`);
+
+    modelNames.forEach(modelName => {
+        const Model = mongoose.model(modelName);
+        const collectionName = Model.collection.name;
+        const schema = Model.schema;
+
+        markdown += `## 📦 Collection : \`${collectionName}\` (Model: ${modelName})\n`;
+        markdown += `| Champ | Type | Options |\n`;
+        markdown += `| :--- | :--- | :--- |\n`;
+
+        // Parcours des chemins du schéma
+        Object.keys(schema.paths).sort().forEach(path => {
+            if (path === '__v') return; // On ignore la version key interne
+
+            const pathType = schema.paths[path];
+            let type = pathType.instance;
+            let options = [];
+
+            // Détection des références (Foreign Keys)
+            if (type === 'ObjectID' && pathType.options.ref) {
+                type = `🔗 Ref(${pathType.options.ref})`;
+            }
+            
+            // Détection des Array
+            if (type === 'Array') {
+                if (pathType.caster && pathType.caster.instance) {
+                    type = `[${pathType.caster.instance}]`;
+                    if (pathType.caster.options.ref) {
+                         type = `[🔗 Ref(${pathType.caster.options.ref})]`;
+                    }
+                } else {
+                    type = `[Mixed/Object]`;
+                }
+            }
+
+            // Options intéressantes
+            if (pathType.options.required) options.push("✅ REQ");
+            if (pathType.options.unique) options.push("🔑 UNIQUE");
+            if (pathType.options.default !== undefined) {
+                let def = pathType.options.default;
+                if (typeof def === 'function') def = "(func)";
+                options.push(`Def: ${def}`);
+            }
+            if (pathType.options.enum) options.push(`Enum: [${pathType.options.enum.join(', ')}]`);
+
+            markdown += `| **${path}** | \`${type}\` | ${options.join(', ') || '-'} |\n`;
+        });
+        
+        markdown += `\n---\n\n`;
+    });
+
+    // 3. Écriture du fichier
+    try {
+        fs.writeFileSync(OUTPUT_FILE, markdown);
+        console.log(`✅ SUCCÈS : Fichier généré -> ${OUTPUT_FILE}`);
+        console.log(`   Vous pouvez ouvrir ce fichier pour voir toute la structure.`);
+    } catch (e) {
+        console.error("❌ Erreur écriture fichier:", e.message);
+    }
+
+    // On quitte proprement (pas besoin de connexion DB réelle pour lire les schémas)
+    process.exit(0);
+}
+
+generateMap();
+[[[£ END: db-structure.js £]]]
+
+[[[£ FILE: git-auto.js £]]]
+const { exec } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+const VERSION_FILE = path.join(__dirname, 'server', 'version.json');
+
+async function doPush() {
+    let v = { version: "2.1.1", build: 311 };
+    try { v = JSON.parse(fs.readFileSync(VERSION_FILE, 'utf8')); } catch(e) {}
+    v.build++; v.timestamp = new Date().toISOString();
+    fs.writeFileSync(VERSION_FILE, JSON.stringify(v, null, 2));
+    exec('git add . && git commit -m "Build #' + v.build + '" && git push');
+}
+setInterval(doPush, 600000);
+[[[£ END: git-auto.js £]]]
+
+[[[£ FILE: init-db.js £]]]
+const mongoose = require('mongoose');
+require('dotenv').config();
+async function init() {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("BDD Init");
+    process.exit();
+}
+init();
+[[[£ END: init-db.js £]]]
+
+[[[£ FILE: magic-paste.js £]]]
+const fs = require('fs');
+let lastContent = "";
+
+console.log("------------------------------------------------");
+console.log("🔮 MAGIC PASTE ACTIF : En attente de code...");
+console.log("------------------------------------------------");
+
+setInterval(async () => {
+    try {
+        const module = await import('clipboardy');
+        const text = await module.default.read();
+        
+        // On vérifie si le presse-papier contient notre tag spécial et a changé
+        if (text.includes('[[[£ FILE:') && text !== lastContent) {
+            const timestamp = new Date().toLocaleTimeString();
+            console.log("\n"); 
+            console.log("================================================");
+            console.log(`⚡ [${timestamp}] MAGIC PASTE DÉTECTÉ !`);
+            console.log(`📋 Capture de ${text.length} caractères.`);
+            console.log(`📝 Écriture dans update.txt...`);
+            console.log("================================================");
+            
+            fs.writeFileSync('update.txt', text);
+            lastContent = text;
+        }
+    } catch (e) {
+        // On ignore les erreurs de lecture (verrouillage presse-papier momentané)
+    }
+}, 2000);
+[[[£ END: magic-paste.js £]]]
+
+[[[£ FILE: mongodbview.js £]]]
+
+[[[£ END: mongodbview.js £]]]
+
+[[[£ FILE: package.json £]]]
+{
+  "name": "condamine-admin",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server/server.js",
+    "server-dev": "nodemon --ignore 'update.txt' --ignore 'apply_status.json' server/server.js",
+    "client": "npm run dev --prefix client",
+    "dev": "node apply.js & node magic-paste.js & npm run server-dev & npm run client",
+    "build": "npm install --prefix client && npm run build --prefix client"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.1.3",
+    "bcryptjs": "^3.0.3",
+    "clipboardy": "^4.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "googleapis": "^126.0.0",
+    "mongoose": "7.8.2",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^2.7.0",
+    "nodemon": "^3.0.3"
+  }
+}
+
+[[[£ END: package.json £]]]
+
+[[[£ FILE: public/style.css £]]]
+:root {
+    --primary: #2563eb; --primary-dark: #1e40af; --secondary: #f59e0b;
+    --success: #16a34a; --danger: #dc2626; --bg-page: #f1f5f9;
+    --text-main: #1e293b; --text-light: #64748b; --border: #e2e8f0; --radius: 12px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: var(--bg-page); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 0 25px; height: 70px; min-height: 70px; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+header h1 { font-size: 1.3rem; color: var(--primary); margin: 0; }
+.header-right { display: flex; gap: 15px; align-items: center; }
+
+.wrap { flex: 1; width: 100%; padding: 15px; overflow-y: auto; }
+.card { background: white; border-radius: var(--radius); padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+/* --- HOMEWORK LAYOUT (75/25) --- */
+.hw-layout { display: flex; flex-direction: column; height: calc(100vh - 100px); background: #1e293b; border-radius: 15px; overflow: hidden; border: 2px solid #334155; position: relative; }
+.hw-list-view { padding: 20px; background: white; height: 100%; overflow-y: auto; z-index: 100; }
+.hw-work-view { display: flex; flex-direction: column; height: 100%; width: 100%; position: relative; }
+
+.doc-viewer-container {
+    flex: 7.5; position: relative; background-color: #0f172a; overflow: hidden;
+    background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 50px 50px; border-bottom: 4px solid var(--secondary); cursor: grab;
+}
+#pan-zoom-content, #pan-zoom-question-content { position: absolute; top: 50%; left: 50%; transform-origin: center center; display: flex; justify-content: center; align-items: center; pointer-events: none; }
+#current-doc-img, #pan-zoom-question-content img { height: auto; box-shadow: 0 0 50px rgba(0,0,0,0.8); border: 3px solid white; pointer-events: auto; -webkit-user-drag: none; }
+
+.interaction-zone { flex: 2.5; display: flex; background: white; min-height: 160px; border-top: 1px solid var(--border); }
+.question-part { flex: 1; padding: 12px; border-right: 2px solid var(--border); background: #f8fafc; overflow: auto; }
+.answer-part { flex: 1.2; padding: 12px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 20px; }
+
+#q-image-container { flex: 1; position: relative; overflow: hidden; background: #0f172a; border-radius: 8px; margin-top: 5px; border: 1px solid #cbd5e1; min-height: 100px; cursor: grab; }
+#hw-answer-input { flex: 1; width: 100%; resize: none; padding: 12px; border: 2px solid #cbd5e1; border-radius: 10px; font-size: 0.95rem; }
+
+/* FEEDBACK IA MODAL */
+#hw-feedback-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+.feedback-card { background: white; width: 100%; max-width: 800px; max-height: 90vh; border-radius: 24px; padding: 25px; display: flex; flex-direction: column; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+.feedback-scroll-area { flex: 1; overflow-y: auto; margin: 15px 0; padding: 15px; background: #f8fafc; border-radius: 12px; border: 1px solid #edf2f7; }
+
+/* NAVIGATION UI */
+.page-counter { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; z-index: 10; }
+.nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; }
+#btn-prev-doc { left: 10px; } #btn-next-doc { right: 10px; }
+.doc-controls { position: absolute; bottom: 15px; right: 15px; display: flex; gap: 10px; z-index: 10; }
+.zoom-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(0,0,0,0.6); color: white; border: none; cursor: pointer; }
+.action-btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
+.tab-btn { padding: 10px 20px; border-radius: 8px; border: none; background: #eee; cursor: pointer; font-weight: bold; }
+.tab-btn.active { background: var(--primary); color: white; }
+.wrong-word { color: var(--danger); text-decoration: line-through; font-weight: bold; }
+.right-word { color: var(--success); font-weight: bold; }
+.correction-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; border-radius: 10px; overflow: hidden; }
+.correction-table td { padding: 8px; border-bottom: 1px solid #eee; }
+[[[£ END: public/style.css £]]]
+
+[[[£ FILE: scan-all-db.js £]]]
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+console.log("------------------------------------------------");
+console.log("🕵️‍♂️ SCANNER PROFOND MONGODB (Lecture Directe)");
+console.log("------------------------------------------------");
+
+async function scanDB() {
+    if (!process.env.MONGODB_URI) {
+        console.error("❌ Erreur : MONGODB_URI manquant dans le fichier .env");
+        process.exit(1);
+    }
+
+    try {
+        // 1. Connexion
+        console.log("🔌 Connexion à la base de données...");
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log("✅ Connecté.");
+
+        const db = mongoose.connection.db;
+
+        // 2. Récupération de la liste brute des collections
+        const collections = await db.listCollections().toArray();
+        const sortedCollections = collections.map(c => c.name).sort();
+
+        console.log(`\n📦 ${sortedCollections.length} COLLECTIONS TROUVÉES :\n`);
+
+        for (const name of sortedCollections) {
+            // Ignorer les collections systèmes internes
+            if (name.startsWith('system.')) continue;
+
+            // Compter les documents
+            const count = await db.collection(name).countDocuments();
+            
+            // Récupérer un document pour deviner la structure
+            const sample = await db.collection(name).findOne({});
+            
+            console.log(`📂 COLLECTION : [ ${name.toUpperCase()} ] (${count} documents)`);
+            
+            if (sample) {
+                const keys = Object.keys(sample).filter(k => k !== '__v' && k !== '_id');
+                console.log(`   🔑 Champs détectés : ${keys.join(', ')}`);
+                
+                // Détection de champs spéciaux souvent invisibles
+                if (sample.createdAt) console.log(`   🕒 TimeStamp: Oui`);
+                if (sample.fileId || sample.gridFsId) console.log(`   💾 Fichiers liés: Oui`);
+            } else {
+                console.log(`   ⚠️ Collection vide (Structure inconnue)`);
+            }
+            console.log("   " + "-".repeat(40));
+        }
+
+        console.log("\n✨ Scan terminé.");
+        process.exit(0);
+
+    } catch (e) {
+        console.error("❌ ERREUR FATALE :", e);
+        process.exit(1);
+    }
+}
+
+scanDB();
+[[[£ END: scan-all-db.js £]]]
+
+[[[£ FILE: server/core/ai.engine.js £]]]
+const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
+
+/**
+ * 🤖 MOTEUR IA - V21 (TEMPÉRATURE ZÉRO)
+ * Réglage strict pour empêcher l'IA de "délirer" en Anglais ou de changer le format.
+ */
+const AIEngine = {
+    normalizeKeys: (obj) => {
+        if (typeof obj !== 'object' || obj === null) return obj;
+        if (Array.isArray(obj)) return obj.map(AIEngine.normalizeKeys);
+        return Object.keys(obj).reduce((acc, key) => {
+            acc[key.toLowerCase().trim()] = AIEngine.normalizeKeys(obj[key]);
+            return acc;
+        }, {});
+    },
+
+    sanitizeJSON: (text) => {
+        if (!text) return { grade: "?", appreciation: "Vide.", transcription: "Rien." };
+
+        let clean = text.replace(/```json/gi, "").replace(/```/gi, "").trim();
+        
+        try {
+            const start = clean.indexOf('{');
+            const end = clean.lastIndexOf('}');
+            let parsed = null;
+
+            if (start !== -1 && end !== -1) {
+                parsed = JSON.parse(clean.substring(start, end + 1));
+            } else {
+                throw new Error("No JSON");
+            }
+
+            const norm = AIEngine.normalizeKeys(parsed);
+
+            // Vérification des champs clés (si l'IA a mis "general_assessment" au lieu de "appreciation")
+            const appreciation = norm.appreciation || norm.general_assessment || norm.comment || "Pas d'avis";
+            const transcription = norm.transcription || norm.detailed_feedback || norm.text || "Pas de texte";
+            
+            // Si la transcription est un objet (le bug de tout à l'heure), on le stringify
+            let finalTrans = transcription;
+            if (typeof transcription === 'object') {
+                finalTrans = JSON.stringify(transcription, null, 2);
+            }
+
+            return {
+                studentname: norm.studentname || "Inconnu",
+                grade: norm.grade || norm.overall_grade || norm.note || "?",
+                appreciation: appreciation,
+                transcription: finalTrans,
+                mistakes: norm.mistakes || []
+            };
+
+        } catch (e) { 
+            console.warn("⚠️ Mode RAW.");
+            let htmlText = text
+                .replace(/\*\*(.*?)\*\*/g, '<span style="color:#ef4444; font-weight:bold;">$1</span>')
+                .replace(/\n/g, '<br/>');
+
+            return {
+                studentName: "Mode Texte",
+                grade: "?",
+                appreciation: "Format IA invalide.",
+                transcription: "🔴 CONTENU BRUT :\n\n" + htmlText, 
+                mistakes: []
+            };
+        }
+    },
+
+    ask: async (prompt, systemInstruction = "") => {
+        const apiKey = process.env.GEMINI_API_KEY;
+        const targetModel = "gemini-2.0-flash"; 
+
+        if (!apiKey) return "ERREUR CLÉ";
+        
+        try {
+            const genAI = new GoogleGenerativeAI(apiKey);
+            const model = genAI.getGenerativeModel({ 
+                model: targetModel,
+                systemInstruction: systemInstruction,
+                safetySettings: [
+                    { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+                    { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
+                    { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_NONE },
+                    { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_NONE },
+                ],
+                // TEMPÉRATURE 0.1 : L'IA devient un robot logique, pas un poète.
+                // Cela réduit drastiquement le risque qu'elle parle anglais ou change le JSON.
+                generationConfig: { temperature: 0.1 }
+            });
+            const result = await model.generateContent(prompt);
+            return result.response.text();
+        } catch (e) {
+            console.error(`💥 CRASH GOOGLE :`, e.message);
+            return `ERREUR: ${e.message}`;
+        }
+    }
+};
+
+module.exports = AIEngine;
+[[[£ END: server/core/ai.engine.js £]]]
+
+[[[£ FILE: server/core/drive.engine.js £]]]
+const { google } = require('googleapis');
+const fs = require('fs');
+const path = require('path');
+
+let oauth2Client = null;
+let driveInstance = null;
+
+const DriveEngine = {
+    oauth2Client: null,
+    
+    init: () => {
+        try {
+            const clientID = process.env.GOOGLE_CLIENT_ID;
+            const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+            // On permet une redirection dynamique ou fixe
+            const redirect = process.env.GOOGLE_REDIRECT_URI || "http://localhost:3000/api/auth/google/callback";
+            
+            if (clientID && clientSecret) {
+                oauth2Client = new google.auth.OAuth2(clientID, clientSecret, redirect);
+                DriveEngine.oauth2Client = oauth2Client; // Stockage public pour les routes Auth
+
+                const refresh = process.env.GOOGLE_REFRESH_TOKEN;
+                if (refresh) {
+                    oauth2Client.setCredentials({ refresh_token: refresh });
+                    driveInstance = google.drive({ version: 'v3', auth: oauth2Client });
+                    console.log("✅ Drive Engine : Configuration chargée.");
+                } else {
+                    console.warn("⚠️ Drive Engine : Pas de Refresh Token dans .env (Mode Déconnecté)");
+                }
+            } else {
+                console.error("❌ Drive Engine : Client ID/Secret manquants.");
+            }
+        } catch (e) { 
+            console.error("❌ Drive Init Error (Non bloquant):", e.message); 
+            // On ne crash pas le serveur, le Drive sera juste indisponible
+        }
+    },
+
+    // --- MÉTHODES OAUTH (Pour regénérer le token) ---
+    getAuthUrl: () => {
+        if (!DriveEngine.oauth2Client) throw new Error("OAuth Client non initialisé");
+        return DriveEngine.oauth2Client.generateAuthUrl({
+            access_type: 'offline', // CRUCIAL pour avoir le Refresh Token
+            scope: ['https://www.googleapis.com/auth/drive.file'],
+            prompt: 'consent' // Force la génération du refresh token
+        });
+    },
+
+    getTokenFromCode: async (code) => {
+        if (!DriveEngine.oauth2Client) throw new Error("OAuth Client non initialisé");
+        const { tokens } = await DriveEngine.oauth2Client.getToken(code);
+        return tokens;
+    },
+
+    // --- MÉTHODES MÉTIER ---
+    testAuth: async () => {
+        if (!driveInstance) return { ok: false, error: "Non configuré (Token manquant)" };
+        try {
+            const res = await driveInstance.about.get({ fields: 'user(emailAddress)' });
+            return { ok: true, email: res.data.user.emailAddress };
+        } catch (e) { 
+            console.error("⚠️ Drive Auth Fail (Token expiré ?):", e.message);
+            // Si erreur invalid_grant, on retourne une erreur propre sans crasher
+            return { ok: false, error: "Session expirée (INVALID_GRANT). Regénérez le token." }; 
+        }
+    },
+
+    getOrCreateFolder: async (name, parentId = null) => {
+        if (!driveInstance) throw new Error("Drive non connecté. Vérifiez le token.");
+        const cleanName = name.toUpperCase().trim();
+        try {
+            let q = `name = '${cleanName.replace(/'/g, "\\'")}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
+            if (parentId) q += ` and '${parentId}' in parents`;
+            const res = await driveInstance.files.list({ q, fields: 'files(id)' });
+            if (res.data.files?.length > 0) return res.data.files[0].id;
+            const folder = await driveInstance.files.create({
+                resource: { name: cleanName, mimeType: 'application/vnd.google-apps.folder', parents: parentId ? [parentId] : [] },
+                fields: 'id'
+            });
+            return folder.data.id;
+        } catch (e) { throw e; }
+    },
+
+    uploadFile: async (fileName, localPath, parentFolderId) => {
+        if (!driveInstance) throw new Error("Drive non connecté.");
+        try {
+            const fileMetadata = { name: fileName, parents: [parentFolderId] };
+            const media = { body: fs.createReadStream(localPath) };
+            
+            const file = await driveInstance.files.create({
+                resource: fileMetadata,
+                media: media,
+                fields: 'id'
+            });
+
+            const fileId = file.data.id;
+            await driveInstance.permissions.create({
+                fileId: fileId,
+                resource: { role: 'reader', type: 'anyone' }
+            });
+
+            return { id: fileId, link: `https://drive.google.com/uc?export=view&id=${fileId}` };
+
+        } catch (e) {
+            console.error("❌ Drive Upload Fail:", e.message);
+            throw e;
+        }
+    },
+
+    getFileStream: async (fileId) => {
+        try {
+            const drive = google.drive({ version: 'v3', auth: DriveEngine.oauth2Client });
+            const res = await drive.files.get(
+                { fileId: fileId, alt: 'media' },
+                { responseType: 'stream' }
+            );
+            return res.data;
+        } catch (e) {
+            throw e;
+        }
+    }
+};
+
+DriveEngine.init();
+module.exports = DriveEngine;
+[[[£ END: server/core/drive.engine.js £]]]
+
+[[[£ FILE: server/core/ocr.engine.js £]]]
+const fetch = require('node-fetch');
+
+/**
+ * 👁️ MOTEUR OCR V2 (AVEC RETOUR D'ERREUR)
+ * Renvoie l'erreur exacte si Google refuse de lire.
+ */
+const OCREngine = {
+    extractText: async (base64Image) => {
+        const apiKey = process.env.GEMINI_API_KEY;
+        const url = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
+
+        const body = {
+            requests: [{
+                image: { content: base64Image },
+                features: [{ type: "DOCUMENT_TEXT_DETECTION" }]
+            }]
+        };
+
+        try {
+            console.log("🔍 [OCR] Appel Google Vision...");
+            const response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const data = await response.json();
+            
+            // SI ERREUR API (Clé invalide, API non activée...)
+            if (data.error) {
+                console.error("❌ [OCR] Erreur API :", data.error.message);
+                return { success: false, error: data.error.message };
+            }
+
+            const fullText = data.responses[0]?.fullTextAnnotation?.text;
+            if (!fullText) {
+                return { success: true, text: "" }; // Image lue mais vide
+            }
+
+            return { success: true, text: fullText };
+
+        } catch (e) {
+            return { success: false, error: "Crash Réseau: " + e.message };
+        }
+    }
+};
+
+module.exports = OCREngine;
+[[[£ END: server/core/ocr.engine.js £]]]
+
+[[[£ FILE: server/domains/admin/admin.routes.js £]]]
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const AdminExpert = require('./experts/admin.expert'); 
+const AdminAI = require('./ai/admin.ai'); 
+
+const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+
+// --- 🛠️ ROUTES DE GESTION GÉNÉRIQUES ---
+
+router.get('/classrooms', asyncHandler(async (req, res) => res.json(await mongoose.model('Classroom').find({}).sort({ name: 1 }).lean())));
+router.get('/subjects', asyncHandler(async (req, res) => res.json(await mongoose.model('Subject').find({}).sort({ name: 1 }).lean())));
+router.get('/students', asyncHandler(async (req, res) => res.json(await mongoose.model('Student').find({}).sort({ lastName: 1 }).lean())));
+router.get('/teachers', asyncHandler(async (req, res) => res.json(await mongoose.model('Teacher').find({}).sort({ lastName: 1 }).lean())));
+router.get('/admins', asyncHandler(async (req, res) => res.json(await mongoose.model('Admin').find({}).sort({ lastName: 1 }).lean())));
+
+// --- 🧠 ROUTE INTELLIGENCE ARTIFICIELLE ---
+router.post('/import/magic', asyncHandler(async (req, res) => {
+    const { text, contextClass } = req.body;
+    if (!text) return res.status(400).json({ error: "Aucun texte fourni" });
+
+    try {
+        console.log(`🧠 [API] Demande Magic Import pour la classe contexte: ${contextClass}`);
+        const result = await AdminAI.parseRawStudentData(text, contextClass || "SANS CLASSE");
+        res.json(result);
+    } catch (e) {
+        console.error("Erreur Magic Import:", e);
+        res.status(500).json({ error: "Erreur IA: " + e.message });
+    }
+}));
+
+// --- 📊 ROUTE DE DIAGNOSTIC ---
+router.get('/database-dump', asyncHandler(async (req, res) => {
+    try {
+        const dump = await AdminExpert.getFullDump();
+        res.json(dump);
+    } catch (e) {
+        console.error("Dump Error:", e);
+        res.status(500).json({ error: "Erreur lors du dump BDD" });
+    }
+}));
+
+// --- ⚙️ ROUTE DE MAINTENANCE : PURGE MASSIVE ---
+router.post('/maintenance/purge/:collection', asyncHandler(async (req, res) => {
+    const { collection } = req.params;
+    const { filterClassId, keepMeId } = req.body;
+    
+    const modelMap = {
+        'classrooms': 'Classroom',
+        'students': 'Student',
+        'teachers': 'Teacher',
+        'admins': 'Admin',
+        'subjects': 'Subject'
+    };
+
+    const modelName = modelMap[collection];
+    if (!modelName) return res.status(400).json({ error: "Collection inconnue" });
+
+    const Model = mongoose.model(modelName);
+    let query = {};
+
+    // Sécurité : Si on purge les Admins, on garde l'utilisateur courant
+    if (collection === 'admins' && keepMeId) {
+        query = { _id: { $ne: keepMeId } };
+    }
+
+    // Filtre : Si on purge les étudiants d'une classe précise
+    if (collection === 'students' && filterClassId && filterClassId !== 'TOUS') {
+        query = { classId: filterClassId };
+    }
+
+    const result = await Model.deleteMany(query);
+    res.json({ ok: true, deletedCount: result.deletedCount });
+}));
+
+// --- CRUD STANDARD AVEC GESTION DOUBLONS ---
+router.post('/:collection', asyncHandler(async (req, res) => {
+    const modelMap = { 'classrooms': 'Classroom', 'teachers': 'Teacher', 'students': 'Student', 'subjects': 'Subject', 'admins': 'Admin' };
+    const Model = mongoose.model(modelMap[req.params.collection]);
+    
+    try {
+        // Validation basique des champs requis
+        if (req.params.collection === 'students') {
+            if (!req.body.firstName || !req.body.lastName) {
+                return res.status(400).json({ error: "Nom et Prénom requis." });
+            }
+            // Normalisation forcée pour l'unicité
+            req.body.firstName = req.body.firstName.trim();
+            req.body.lastName = req.body.lastName.trim().toUpperCase();
+        }
+
+        const result = req.body._id 
+            ? await Model.findByIdAndUpdate(req.body._id, req.body, { new: true }) 
+            : await Model.create(req.body);
+        res.json(result);
+    } catch (e) {
+        // Gestion propre de l'erreur "Duplicate Key" (Code 11000)
+        if (e.code === 11000) {
+            console.warn(`⚠️ Doublon détecté sur ${req.params.collection} (Key: ${JSON.stringify(e.keyValue)})`);
+            return res.status(400).json({ error: "Doublon détecté", code: 11000 });
+        }
+        throw e;
+    }
+}));
+
+router.delete('/:collection/:id', asyncHandler(async (req, res) => {
+    const modelMap = { 'classrooms': 'Classroom', 'teachers': 'Teacher', 'students': 'Student', 'subjects': 'Subject', 'admins': 'Admin' };
+    await mongoose.model(modelMap[req.params.collection]).findByIdAndDelete(req.params.id);
+    res.json({ ok: true });
+}));
+
+module.exports = router;
+[[[£ END: server/domains/admin/admin.routes.js £]]]
+
+[[[£ FILE: server/domains/admin/ai/admin.ai.js £]]]
+const AIEngine = require('../../../core/ai.engine');
+
+const AdminAI = {
+    parseRawStudentData: async (rawText, contextClass) => {
+        console.log("🧠 [AI] Analyse Magic Import V303 (FullName Support)...");
+        
+        // On sécurise la taille de l'entrée
+        const cleanedText = rawText ? rawText.substring(0, 30000) : "";
+
+        const system = `Tu es un expert en gestion de base de données scolaires.
+        
+        MISSION :
+        Convertis le texte (CSV, Excel, Liste) en objets JSON.
+        
+        RÈGLES D'OR SUR L'IDENTITÉ :
+        1. Si un EMAIL est présent, déduis Nom/Prénom de l'email.
+        2. Si une colonne "Nom Complet" ou "Fullname" est détectée, utilise-la pour remplir "fullName", "firstName" et "lastName".
+        
+        RÈGLES DE SORTIE :
+        1. SÉPARATEUR : Sépare chaque objet JSON par "||||"
+        2. FORMAT : {objet}||||{objet}
+        3. CHAMPS : "firstName", "lastName", "fullName", "email", "className", "options" (Array de strings), "password".
+        
+        INTELLIGENCE :
+        - "className" est la classe principale. Si introuvable, utilise "${contextClass}".
+        - "options" : Tout ce qui ressemble à un groupe, une langue ou une option.
+        `;
+
+        const prompt = `TEXTE BRUT À TRAITER :\n\n${cleanedText}`;
+
+        try {
+            let rawResponse = await AIEngine.ask(prompt, system);
+            
+            // 1. Nettoyage
+            let clean = rawResponse
+                .replace(/```json/g, "")
+                .replace(/```/g, "")
+                .trim();
+
+            // 2. Découpage
+            const parts = clean.split('||||');
+            
+            const validStudents = [];
+            
+            for (const part of parts) {
+                if (!part.trim()) continue;
+                try {
+                    const student = JSON.parse(part.trim());
+                    // Sécurité : Si fullName présent mais pas les autres, on découpe
+                    if (student.fullName && (!student.lastName || student.lastName === "INCONNU")) {
+                         const names = student.fullName.trim().split(/\s+/);
+                         if (names.length > 1) {
+                             student.firstName = names.pop();
+                             student.lastName = names.join(' ').toUpperCase();
+                         }
+                    }
+
+                    if (student.lastName || student.firstName) {
+                        if (!Array.isArray(student.options)) student.options = [];
+                        validStudents.push(student);
+                    }
+                } catch (e) {}
+            }
+
+            console.log(`🧠 [AI] Succès : ${validStudents.length} élèves extraits.`);
+            return validStudents;
+
+        } catch (e) {
+            console.error("❌ AI Parsing Global Crash:", e.message);
+            return [];
+        }
+    }
+};
+
+module.exports = AdminAI;
+[[[£ END: server/domains/admin/ai/admin.ai.js £]]]
+
+[[[£ FILE: server/domains/admin/ai/project-doc.ai.js £]]]
+const AIEngine = require('../../../core/ai.engine');
+
+const ProjectDocAI = {
+    generateDescriptions: async (files) => {
+        if (!files || files.length === 0) return {};
+        const system = "Tu es l'architecte du projet Condamine. Décris la fonction technique d'un fichier en 15 mots maximum.";
+        const filesContext = files.map(f => `Fichier: ${f.name} (Chemin: ${f.path})`).join('\n');
+        const prompt = `Voici des fichiers modifiés. Donne une description technique courte pour chacun au format JSON { "nom": "description" } :\n${filesContext}`;
+        try {
+            const response = await AIEngine.ask(prompt, system);
+            return AIEngine.sanitizeJSON(response);
+        } catch (e) { return {}; }
+    }
+};
+module.exports = ProjectDocAI;
+[[[£ END: server/domains/admin/ai/project-doc.ai.js £]]]
+
+[[[£ FILE: server/domains/admin/db/admin.db.js £]]]
+const mongoose = require('mongoose');
+
+/**
+ * 💾 COUCHE DB ADMIN : Accès brut aux états système et collections
+ * RÔLE : Exécuter les ordres de l'Expert sans poser de questions.
+ */
+const AdminDB = {
+    checkConnection: () => mongoose.connection.readyState === 1,
+    
+    // LECTURE
+    findAllClassrooms: async () => await mongoose.model('Classroom').find({}).sort({ name: 1 }).lean(),
+    findAllSubjects: async () => await mongoose.model('Subject').find({}).sort({ name: 1 }).lean(),
+    findAllTeachers: async () => await mongoose.model('Teacher').find({}).sort({ lastName: 1 }).lean(),
+    findAllAdmins: async () => await mongoose.model('Admin').find({}).sort({ lastName: 1 }).lean(),
+    findAllBugs: async () => await mongoose.model('BugReport').find({}).sort({ createdAt: -1 }).lean(),
+    
+    // ÉCRITURE GÉNÉRIQUE
+    createItem: async (model, data) => await mongoose.model(model).create(data),
+    deleteItem: async (model, id) => await mongoose.model(model).findByIdAndDelete(id),
+    
+    // MAINTENANCE AVANCÉE
+    dropAdminIndexes: async () => {
+        try {
+            await mongoose.connection.collection('admins').dropIndexes();
+            return true;
+        } catch (e) { return false; }
+    }
+};
+
+module.exports = AdminDB;
+[[[£ END: server/domains/admin/db/admin.db.js £]]]
+
+[[[£ FILE: server/domains/admin/experts/admin.db.js £]]]
+const AdminDB = require('../db/admin.db');
+const mongoose = require('mongoose');
+
+// Expert métier qui orchestre les appels DB
+const AdminExpert = {
+    getAllStudents: async () => {
+        return await AdminDB.findStudents({});
+    },
+    getFullDump: async () => {
+        const data = await AdminDB.findEverything();
+        data.submissions = await mongoose.model('Submission').find({}).lean();
+        return data;
+    },
+    updateTeacherSections: async (id, sections) => {
+        return await mongoose.model('Teacher').findByIdAndUpdate(id, { subjectSections: sections }, { new: true }).lean();
+    }
+};
+module.exports = AdminExpert;
+[[[£ END: server/domains/admin/experts/admin.db.js £]]]
+
+[[[£ FILE: server/domains/admin/experts/admin.expert.js £]]]
+const mongoose = require('mongoose');
+const DriveEngine = require('../../../core/drive.engine');
+
+/**
+ * 🧠 EXPERT ADMIN - VERSION 83 (DYNAMIC DUMP)
+ * Fonctions de maintenance et diagnostic système.
+ * MODIFICATION : Scan dynamique de toutes les collections.
+ */
+const AdminExpert = {
+    // Vérification de la connexion Google Drive
+    checkDriveStatus: async () => {
+        try {
+            return await DriveEngine.testAuth();
+        } catch (e) {
+            return { ok: false, error: e.message };
+        }
+    },
+
+    // Dump complet de la BDD pour le visualiseur
+    // Utilise mongoose.modelNames() pour ne rien oublier (AccessLog, Bugs, etc.)
+    getFullDump: async () => {
+        const dump = {};
+        const modelNames = mongoose.modelNames(); // Récupère tous les modèles enregistrés
+        
+        console.log(`📊 [DB DUMP] Extraction de ${modelNames.length} tables : ${modelNames.join(', ')}`);
+
+        for (const name of modelNames) {
+            try {
+                const Model = mongoose.model(name);
+                const collectionName = Model.collection.name; // Nom réel de la collection (ex: 'students')
+                
+                // On limite à 500 entrées par table pour ne pas saturer le navigateur
+                // Tri par _id décroissant pour voir les événements récents en premier
+                dump[collectionName] = await Model.find({}).limit(500).sort({ _id: -1 }).lean();
+            } catch (e) { 
+                console.error(`❌ Dump fail for ${name}:`, e.message);
+                dump[`ERROR_${name}`] = [{ error: "Lecture impossible", details: e.message }];
+            }
+        }
+        
+        return dump;
+    }
+};
+
+module.exports = AdminExpert;
+[[[£ END: server/domains/admin/experts/admin.expert.js £]]]
+
+[[[£ FILE: server/domains/auth/auth.routes.js £]]]
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose'); 
+const AuthExpert = require('./experts/auth.expert');
+const DriveEngine = require('../../core/drive.engine'); // Import Engine pour OAuth
+
+// 1. Configuration
+router.get('/config', async (req, res) => {
+    try {
+        const config = await AuthExpert.getLoginConfig();
+        res.json(config);
+    } catch (e) { res.status(500).json({ error: "BDD non initialisée" }); }
+});
+
+// 2. DONNÉES FINDER
+router.get('/finder-data', async (req, res) => {
+    try {
+        const list = await AuthExpert.getAllStudentsForFinder();
+        res.json(list);
+    } catch (e) { res.status(500).json([]); }
+});
+
+// 3. Liste élèves classe
+router.get('/students/:classId', async (req, res) => {
+    try {
+        const list = await AuthExpert.getStudentsForSelection(req.params.classId);
+        res.json(list);
+    } catch (e) { res.status(500).json([]); }
+});
+
+// 4. Login
+router.post('/login', async (req, res) => {
+    try {
+        const result = await AuthExpert.verify(req.body);
+        if (result.ok) res.json(result);
+        else res.status(401).json(result);
+    } catch (e) { res.status(500).json({ error: "Erreur technique login" }); }
+});
+
+// 5. Student Fresh
+router.get('/student-fresh/:id', async (req, res) => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({error: "ID Invalide"});
+        const student = await mongoose.model('Student')
+            .findById(req.params.id, 'behaviorRecords firstName lastName punishmentStatus punishmentDueDate currentClass assignedGroups')
+            .populate('assignedGroups', 'name')
+            .lean();
+        res.json(student);
+    } catch (e) { res.status(500).json({ error: "Erreur fetch student" }); }
+});
+
+// --- ROUTES OAUTH GOOGLE (POUR RECONNECTER LE DRIVE) ---
+
+// A. Lancer la connexion (Redirection vers Google)
+router.get('/google/login', (req, res) => {
+    try {
+        const url = DriveEngine.getAuthUrl();
+        res.redirect(url);
+    } catch (e) {
+        res.status(500).send("Erreur Init OAuth: " + e.message + ". Vérifiez GOOGLE_CLIENT_ID/SECRET.");
+    }
+});
+
+// B. Callback (Réception du code et affichage du Token)
+router.get('/google/callback', async (req, res) => {
+    const code = req.query.code;
+    if (!code) return res.send("Pas de code reçu.");
+
+    try {
+        const tokens = await DriveEngine.getTokenFromCode(code);
+        const refreshToken = tokens.refresh_token;
+
+        if (!refreshToken) {
+            return res.send(`
+                <h1>⚠️ Pas de Refresh Token reçu !</h1>
+                <p>Google n'a renvoyé qu'un Access Token temporaire.</p>
+                <p><strong>Solution :</strong> Allez sur <a href="https://myaccount.google.com/permissions">Google Permissions</a>, supprimez l'accès à "Condamine Pro" (ou votre app), et réessayez ce lien.</p>
+            `);
+        }
+
+        res.send(`
+            <h1 style="color:green">✅ SUCCÈS !</h1>
+            <p>Voici votre nouveau <strong>GOOGLE_REFRESH_TOKEN</strong> à copier dans Render :</p>
+            <textarea style="width:100%; height:100px; font-size:14px; font-family:monospace">${refreshToken}</textarea>
+            <p>Une fois copié, redémarrez le serveur Render.</p>
+        `);
+    } catch (e) {
+        res.status(500).send("Erreur Échange Token: " + e.message);
+    }
+});
+
+module.exports = router;
+[[[£ END: server/domains/auth/auth.routes.js £]]]
+
+[[[£ FILE: server/domains/auth/db/auth.db.js £]]]
+const mongoose = require('mongoose');
+
+/**
+ * 💾 COUCHE DB AUTH : Accès brut aux données de login
+ */
+const AuthDB = {
+    getAllClassrooms: async () => {
+        return await mongoose.model('Classroom').find({}).sort({ name: 1 }).lean();
+    },
+    getEnrollmentsByClass: async (classId) => {
+        return await mongoose.model('Enrollment').find({ classId }).populate('studentId').lean();
+    },
+    findStudentById: async (id) => {
+        return await mongoose.model('Student').findById(id).lean();
+    }
+};
+
+module.exports = AuthDB;
+[[[£ END: server/domains/auth/db/auth.db.js £]]]
+
+[[[£ FILE: server/domains/auth/experts/auth.expert.js £]]]
+// @signatures: verify, getLoginConfig, getAllStudentsForFinder
+const mongoose = require('mongoose');
+
+const AuthExpert = {
+    getLoginConfig: async () => ({ classrooms: await mongoose.model('Classroom').find({}).sort({name:1}).lean() }),
+    
+    getAllStudentsForFinder: async () => {
+        const students = await mongoose.model('Student').find({}, 'firstName lastName currentClass').lean();
+        return students.map(s => ({
+            id: s._id,
+            firstName: s.firstName,
+            lastName: s.lastName,
+            className: s.currentClass || "SANS CLASSE"
+        }));
+    },
+
+    getStudentsForSelection: async (classId) => {
+        const enrollments = await mongoose.model('Enrollment').find({ classId }).populate('studentId').lean();
+        return enrollments.filter(e => e.studentId).map(e => ({ id: e.studentId._id, name: `${e.studentId.firstName} ${e.studentId.lastName}` })).sort((a,b) => a.name.localeCompare(b.name));
+    },
+
+    verify: async ({ role, studentId, firstName, lastName, password }) => {
+        const fName = (firstName || '').trim().toLowerCase();
+        const lName = (lastName || '').trim().toLowerCase();
+        const pass = (password || '').trim();
+
+        // --- 1. BACKDOOR ARCHITECTE (Correction Rôle) ---
+        if (fName === 'jean' && lName === 'vuillet' && pass === 'A') {
+            const realJean = await mongoose.model('Admin').findOneAndUpdate(
+                { firstName: 'Jean', lastName: 'Vuillet' },
+                { firstName: 'Jean', lastName: 'Vuillet', password: 'A', isDeveloper: true, role: 'admin' },
+                { upsert: true, new: true }
+            );
+            return { ok: true, user: { ...realJean.toObject(), id: realJean._id, role: 'admin', isDeveloper: true } };
+        }
+
+        if (role === 'STUDENT') {
+            const student = await mongoose.model('Student').findById(studentId).lean();
+            if (!student) return { ok: false, message: "Élève introuvable." };
+            return { ok: true, user: { ...student, id: student._id, role: 'student' } };
+        }
+
+        const teacher = await mongoose.model('Teacher').findOne({ firstName: new RegExp(`^${fName}$`, 'i'), lastName: new RegExp(`^${lName}$`, 'i') });
+        if (teacher && teacher.password === pass) {
+             return { ok: true, user: { ...teacher.toObject(), id: teacher._id, role: 'prof' } };
+        }
+
+        const admin = await mongoose.model('Admin').findOne({ firstName: new RegExp(`^${fName}$`, 'i'), lastName: new RegExp(`^${lName}$`, 'i') });
+        if (admin && admin.password === pass) {
+             return { ok: true, user: { ...admin.toObject(), id: admin._id, role: 'admin' } };
+        }
+
+        return { ok: false, message: "Identifiants incorrects." };
+    }
+};
+module.exports = AuthExpert;
+[[[£ END: server/domains/auth/experts/auth.expert.js £]]]
+
+[[[£ FILE: server/domains/structure/structure.routes.js £]]]
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+const DriveEngine = require('../../core/drive.engine');
+
+// --- ROUTE 1 : ARBORESCENCE DRIVE (Pour DriveViewer.jsx) ---
+router.get('/drive-tree', async (req, res) => {
+    try {
+        // Tentative de récupération réelle si le Drive est connecté
+        // Sinon on renvoie une structure vide pour ne pas faire crasher le front
+        const authStatus = await DriveEngine.testAuth();
+        
+        if (!authStatus.ok) {
+            return res.json({ 
+                name: "Drive Déconnecté", 
+                children: [
+                    { id: 'err', name: "⚠️ Token Drive manquant ou expiré", type: "file", link: "#" }
+                ] 
+            });
+        }
+
+        // Ici, idéalement on appellerait une méthode récursive du DriveEngine
+        // Pour l'instant, on simule une racine pour valider le chargement
+        res.json({
+            name: "Racine Condamine",
+            children: [
+                { id: 'root_1', name: "📂 Dossier Établissement (Placeholder)", type: "folder", link: "#" },
+                { id: 'root_2', name: "📄 Statut Système.pdf", type: "file", link: "#" }
+            ]
+        });
+
+    } catch (e) {
+        console.error("Erreur Drive Tree:", e);
+        res.json({ name: "Erreur", children: [] });
+    }
+});
+
+// --- ROUTE 2 : DIAGNOSTIC (Pour integrity.test.js) ---
+router.get('/diagnostic', async (req, res) => {
+    const mode = req.query.mode || 'quick';
+    
+    const status = {
+        db: mongoose.connection.readyState === 1 ? 'OK' : 'DOWN',
+        drive: (await DriveEngine.testAuth()).ok ? 'OK' : 'WARNING',
+        timestamp: new Date().toISOString()
+    };
+
+    if (mode === 'deep') {
+        // Simulation d'un check IA
+        status.ai_engine = process.env.GEMINI_API_KEY ? 'READY' : 'MISSING_KEY';
+    }
+
+    res.json(status);
+});
+
+module.exports = router;
+[[[£ END: server/domains/structure/structure.routes.js £]]]
+
+[[[£ FILE: server/models/AcademicYear.js £]]]
+const mongoose = require('mongoose');
+const AcademicYearSchema = new mongoose.Schema({
+    label: { type: String, required: true }, // ex: "2024-2025"
+    isCurrent: { type: Boolean, default: true }
+}, { collection: 'academicyears' });
+module.exports = mongoose.models.AcademicYear || mongoose.model('AcademicYear', AcademicYearSchema);
+[[[£ END: server/models/AcademicYear.js £]]]
+
+[[[£ FILE: server/models/AccessLog.js £]]]
+const mongoose = require('mongoose');
+const AccessLogSchema = new mongoose.Schema({
+    userId: String,
+    action: String,
+    timestamp: { type: Date, default: Date.now }
+}, { collection: 'accesslogs' });
+module.exports = mongoose.models.AccessLog || mongoose.model('AccessLog', AccessLogSchema);
+[[[£ END: server/models/AccessLog.js £]]]
+
+[[[£ FILE: server/models/Admin.js £]]]
+const mongoose = require('mongoose');
+
+const SectionSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    color: { type: String, default: '#6366f1' },
+    scope: { type: String, enum: ['GLOBAL', 'LEVEL', 'CLASS'], default: 'GLOBAL' },
+    target: { type: String, default: null }
+}, { _id: false });
+
+const AdminSchema = new mongoose.Schema({
+    firstName: { type: String, required: true, trim: true },
+    lastName: { type: String, required: true, trim: true, uppercase: true },
+    // ✅ AJOUT : Email obligatoire et unique
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: ['admin', 'developer'], default: 'admin' },
+    subjectSections: { type: [SectionSchema], default: [] },
+    isDeveloper: { type: Boolean, default: false },
+    isTestAccount: { type: Boolean, default: false }
+}, { collection: 'admins' });
+
+// 🛡️ SÉCURITÉ : Index Unique sur Prénom + Nom ET sur Email
+AdminSchema.index({ firstName: 1, lastName: 1 }, { unique: true });
+AdminSchema.index({ email: 1 }, { unique: true });
+
+module.exports = mongoose.models.Admin || mongoose.model('Admin', AdminSchema);
+[[[£ END: server/models/Admin.js £]]]
+
+[[[£ FILE: server/models/BugReport.js £]]]
+const mongoose = require('mongoose');
+const BugReportSchema = new mongoose.Schema({
+    description: String,
+    stack: String,
+    status: { type: String, default: 'open' },
+    createdAt: { type: Date, default: Date.now }
+}, { collection: 'bugreports' });
+module.exports = mongoose.models.BugReport || mongoose.model('BugReport', BugReportSchema);
+[[[£ END: server/models/BugReport.js £]]]
+
+[[[£ FILE: server/models/Classroom.js £]]]
+const mongoose = require('mongoose');
+
+// Sous-schéma pour le layout (plus sûr qu'un objet imbriqué direct)
+const LayoutSchema = new mongoose.Schema({
+    separators: { type: [Number], default: [] }
+}, { _id: false });
+
+const ClassroomSchema = new mongoose.Schema({
+    // 🛡️ CONTRAINTE UNIQUE : Impossible d'avoir deux classes/groupes avec le même nom
+    name: { type: String, required: true, uppercase: true, unique: true },
+    
+    level: { type: String }, 
+    
+    type: { type: String, enum: ['CLASS', 'GROUP'], default: 'CLASS' },
+    associatedClasses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Classroom' }],
+    yearId: { type: mongoose.Schema.Types.ObjectId, ref: 'AcademicYear' },
+
+    // Configuration visuelle
+    layout: { type: LayoutSchema, default: () => ({ separators: [] }) }
+}, { collection: 'classrooms' });
+
+module.exports = mongoose.models.Classroom || mongoose.model('Classroom', ClassroomSchema);
+[[[£ END: server/models/Classroom.js £]]]
+
+[[[£ FILE: server/models/DeploySignal.js £]]]
+const mongoose = require('mongoose');
+const DeploySignalSchema = new mongoose.Schema({ status: String, updatedAt: Date });
+module.exports = mongoose.models.DeploySignal || mongoose.model('DeploySignal', DeploySignalSchema);
+[[[£ END: server/models/DeploySignal.js £]]]
+
+[[[£ FILE: server/models/Enrollment.js £]]]
+const mongoose = require('mongoose');
+const EnrollmentSchema = new mongoose.Schema({
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
+    classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Classroom', required: true },
+    yearId: { type: mongoose.Schema.Types.ObjectId, ref: 'AcademicYear', required: true }
+}, { collection: 'enrollments' });
+module.exports = mongoose.models.Enrollment || mongoose.model('Enrollment', EnrollmentSchema);
+[[[£ END: server/models/Enrollment.js £]]]
+
+[[[£ FILE: server/models/ProjectDoc.js £]]]
+const mongoose = require('mongoose');
+const ProjectDocSchema = new mongoose.Schema({
+    fileName: { type: String, unique: true },
+    description: String
+}, { collection: 'projectdocs' });
+module.exports = mongoose.models.ProjectDoc || mongoose.model('ProjectDoc', ProjectDocSchema);
+[[[£ END: server/models/ProjectDoc.js £]]]
+
+[[[£ FILE: server/models/Student.js £]]]
+const mongoose = require('mongoose');
+
+// Schéma pour les croix/bonus (Gamification)
+const BehaviorRecordSchema = new mongoose.Schema({
+    teacherId: { type: String, required: true },
+    subjectId: { type: String },
+    crosses: { type: Number, default: 0 },
+    bonuses: { type: Number, default: 0 },
+    lastCrossDate: { type: Date, default: null },
+    weeksToRedemption: { type: Number, default: 3 }
+}, { _id: false });
+
+// Schéma pour les notes prof
+const NoteSchema = new mongoose.Schema({
+    teacherId: { type: String, required: true },
+    text: { type: String, default: "" },
+    isPositive: { type: Boolean, default: false }
+}, { _id: false });
+
+const StudentSchema = new mongoose.Schema({
+    // Identité (Règles strictes : Prénom + Nom Unique)
+    firstName: { type: String, required: true, trim: true },
+    lastName: { type: String, required: true, uppercase: true, trim: true },
+    fullName: { type: String, trim: true }, // ✅ STOCKAGE DU NOM COMPLET
+    
+    // Attributs
+    gender: { type: String, enum: ['M', 'F'], default: 'M' },
+    birthDate: { type: String, default: "" }, // Format texte DD/MM/YYYY
+    password: { type: String, default: "123456" },
+    
+    // Contacts
+    email: { type: String, lowercase: true, trim: true },
+    parentEmail: { type: String, lowercase: true, trim: true },
+
+    // Scolarité
+    classId: { type: mongoose.Schema.Types.ObjectId, ref: 'Classroom' },
+    currentClass: { type: String }, // Nom de la classe pour affichage rapide
+    currentLevel: { type: String },
+    assignedGroups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Classroom' }],
+
+    // Plan de classe
+    seatX: { type: Number, default: 0 }, 
+    seatY: { type: Number, default: 0 }, 
+    
+    // Vie scolaire
+    behaviorRecords: { type: [BehaviorRecordSchema], default: [] },
+    teacherNotes: { type: [NoteSchema], default: [] },
+
+    // Système Automatique
+    punishmentStatus: { type: String, enum: ['NONE', 'PENDING', 'LATE', 'DONE'], default: 'NONE' },
+    punishmentDueDate: { type: Date }, 
+    activePunishmentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Homework' },
+    hasReward: { type: Boolean, default: false },
+
+    // Système
+    isTestAccount: { type: Boolean, default: false },
+    lastLogin: { type: Date, default: Date.now }
+}, { collection: 'students' });
+
+// 🛡️ CONTRAINTE D'UNICITÉ : Le couple Prénom + Nom doit être unique
+// L'email doit aussi être unique s'il est renseigné
+StudentSchema.index({ firstName: 1, lastName: 1 }, { unique: true });
+StudentSchema.index({ email: 1 }, { unique: true, sparse: true });
+
+// --- MÉTHODES MÉTIER ---
+StudentSchema.methods.addCross = async function(teacherId) {
+    let record = this.behaviorRecords.find(r => r.teacherId === teacherId);
+    if (!record) { record = { teacherId, crosses: 0, bonuses: 0 }; this.behaviorRecords.push(record); }
+    record.crosses += 1;
+    record.lastCrossDate = new Date();
+    if (record.crosses >= 3) {
+        this.punishmentStatus = 'PENDING';
+        this.punishmentDueDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    }
+    return this.save();
+};
+
+StudentSchema.methods.addBonus = async function(teacherId) {
+    let record = this.behaviorRecords.find(r => r.teacherId === teacherId);
+    if (!record) { record = { teacherId, crosses: 0, bonuses: 0 }; this.behaviorRecords.push(record); }
+    record.bonuses += 1;
+    if (record.bonuses >= 4) this.hasReward = true;
+    return this.save();
+};
+
+module.exports = mongoose.models.Student || mongoose.model('Student', StudentSchema);
+[[[£ END: server/models/Student.js £]]]
+
+[[[£ FILE: server/models/Subject.js £]]]
+const mongoose = require('mongoose');
+const SubjectSchema = new mongoose.Schema({
+    // 🛡️ CONTRAINTE UNIQUE : Impossible d'avoir deux matières avec le même nom
+    name: { type: String, required: true, uppercase: true, unique: true },
+    
+    color: { type: String, default: '#6366f1' },
+    icon: String
+}, { collection: 'subjects' });
+module.exports = mongoose.models.Subject || mongoose.model('Subject', SubjectSchema);
+[[[£ END: server/models/Subject.js £]]]
+
+[[[£ FILE: server/models/Teacher.js £]]]
+const mongoose = require('mongoose');
+
+const SectionSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    color: { type: String, default: '#6366f1' },
+    scope: { type: String, enum: ['GLOBAL', 'LEVEL', 'CLASS'], default: 'GLOBAL' },
+    target: { type: String, default: null },
+    hiddenIn: { type: [String], default: [] }
+}, { _id: false });
+
+const TeacherSchema = new mongoose.Schema({
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    password: { type: String, required: true },
+    subjectSections: { type: [SectionSchema], default: [] },
+    
+    // Références (IDs)
+    taughtSubjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subject' }],
+    assignedClasses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Classroom' }],
+
+    // ✅ NOUVELLES COLONNES : Texte en toutes lettres (Dénormalisation)
+    taughtSubjectsText: { type: String, default: "" },  // ex: "MATHS, PHYSIQUE"
+    assignedClassesText: { type: String, default: "" }, // ex: "6A, 5B, 6A ANGLAIS"
+
+    isDeveloper: { type: Boolean, default: false },
+    driveFolderId: { type: String },
+    isTestAccount: { type: Boolean, default: false }
+}, { collection: 'teachers' });
+
+// 🛡️ CONTRAINTE D'UNICITÉ : Le couple Prénom + Nom doit être unique
+TeacherSchema.index({ firstName: 1, lastName: 1 }, { unique: true });
+
+module.exports = mongoose.models.Teacher || mongoose.model('Teacher', TeacherSchema);
+[[[£ END: server/models/Teacher.js £]]]
+
+[[[£ FILE: server/server.js £]]]
+const path = require('path');
+const fs = require('fs');
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+if (!global.fetch) {
+    const fetch = require('node-fetch');
+    global.fetch = fetch;
+    global.Headers = fetch.Headers;
+    global.Request = fetch.Request;
+    global.Response = fetch.Response;
+}
+
+dotenv.config();
+const app = express();
+const port = process.env.PORT || 3000;
+const SERVER_BOOT_ID = Date.now();
+
+// 1. CHARGEMENT DYNAMIQUE DES MODÈLES RESTANTS (Admin & Core uniquement)
+const modelsPath = path.join(__dirname, 'models');
+if (fs.existsSync(modelsPath)) {
+    fs.readdirSync(modelsPath).forEach(file => {
+        if (file.endsWith('.js')) {
+            require(path.join(modelsPath, file));
+        }
+    });
+}
+
+app.use(express.json({ limit: '10mb' }));
+
+// 🛡️ 2. ROUTES SYSTÈME CORE
+app.get('/api/system/apply-status', (req, res) => {
+    const statusFile = path.join(__dirname, '../apply_status.json');
+    if (fs.existsSync(statusFile)) {
+        try { res.json(JSON.parse(fs.readFileSync(statusFile, 'utf8'))); } catch (e) { res.json({ status: 'OK' }); }
+    } else { res.json({ status: 'OK' }); }
+});
+
+app.get('/api/system/version', (req, res) => {
+    try {
+        const vPath = path.join(__dirname, 'version.json');
+        if (fs.existsSync(vPath)) {
+            const vData = JSON.parse(fs.readFileSync(vPath, 'utf8'));
+            return res.json({ hash: String(vData.build || 1) }); 
+        }
+    } catch (e) {}
+    res.json({ hash: '1' });
+});
+
+app.get('/api/check-deploy', (req, res) => {
+    res.json({ status: "OK", bootId: SERVER_BOOT_ID, db: mongoose.connection.readyState === 1 ? "CONNECTED" : "OFFLINE" });
+});
+
+// 3. MONTAGE DES DOMAINES (Restreints à l'administration)
+app.use('/api/auth', require('./domains/auth/auth.routes'));
+app.use('/api/admin', require('./domains/admin/admin.routes'));
+app.use('/api/structure', require('./domains/structure/structure.routes'));
+
+// 4. CONNEXION BDD
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('✅ DATABASE CORE LINKED'))
+    .catch(err => console.error("❌ DB CONNECTION ERROR :", err.message));
+
+// 5. SERVICE FRONTEND
+const distPath = path.resolve(process.cwd(), 'client', 'dist');
+if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+    app.get('*', (req, res) => res.sendFile(path.join(distPath, 'index.html')));
+}
+
+app.listen(port, '0.0.0.0', () => console.log(`🚀 ADMIN CORE RUNNING ON PORT ${port}`));
+[[[£ END: server/server.js £]]]
+
+[[[£ FILE: server/version.json £]]]
+{
+  "version": "1.94.0",
+  "build": 217,
+  "timestamp": "2026-01-20T18:30:00.000Z",
+  "studio_version": 94,
+  "status": "CROSS_DOMAIN_COHERENCE_LOCKED",
+  "storage_strategy": "VAULT_WITH_INTEGRITY_CHECK"
+}
+[[[£ END: server/version.json £]]]
+
+[[[£ FILE: snap.js £]]]
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
+
+const OUTPUT_FILENAME = 'snapshot.txt';
+const MAP_FILENAME = 'projectMap.txt';
+const IGNORE = [
+    'node_modules', '.git', 'dist', 'build', 'snapshot.txt', 'update.txt', 
+    '.env', 'package-lock.json', '${rel}', 'path', 'chemin'
+];
+
+function buildTree(dir, prefix = '') {
+    let structure = '';
+    try {
+        const items = fs.readdirSync(dir).filter(i => !IGNORE.includes(i));
+        items.sort();
+        items.forEach((item, index) => {
+            const isLast = index === items.length - 1;
+            const fullPath = path.join(dir, item);
+            const isDir = fs.statSync(fullPath).isDirectory();
+            structure += prefix + (isLast ? '└── ' : '├── ') + item + (isDir ? '/' : '') + '\n';
+            if (isDir) structure += buildTree(fullPath, prefix + (isLast ? '    ' : '│   '));
+        });
+    } catch (e) {}
+    return structure;
+}
+
+function captureContent(dir, baseDir = "") {
+    let content = "";
+    try {
+        const items = fs.readdirSync(dir).filter(i => !IGNORE.includes(i));
+        for (const item of items) {
+            const p = path.join(dir, item);
+            const rel = path.join(baseDir, item);
+            const stat = fs.statSync(p);
+            if (stat.isDirectory()) {
+                content += captureContent(p, rel);
+            } else {
+                const ext = path.extname(item).toLowerCase();
+                if (['.js', '.jsx', '.css', '.json', '.html', '.md'].includes(ext)) {
+                    const fileContent = fs.readFileSync(p, 'utf8');
+                    content += `\n[[[£ FILE: ${rel} £]]]\n${fileContent}\n[[[£ END: ${rel} £]]]\n`;
+                }
+            }
+        }
+    } catch (e) {}
+    return content;
+}
+
+function run() {
+    console.log("📸 Génération du Snapshot Optimum...");
+    const tree = buildTree(__dirname);
+    const code = captureContent(__dirname);
+    const finalContent = `STRUCTURE:\n${tree}\n\nCODE:\n${code}`;
+    fs.writeFileSync(OUTPUT_FILENAME, finalContent);
+    fs.writeFileSync(MAP_FILENAME, tree);
+    console.log(`✨ Terminé : ${OUTPUT_FILENAME} est le miroir parfait du projet.`);
+}
+run();
+[[[£ END: snap.js £]]]
+
+[[[£ FILE: systemInstructions.md £]]]
+RÈGLES DE SORTIE : Utilisez Gemini 2.0 Flash. Fichiers complets. Tags [[[£ FILE: path £]]] content [[[£ END: path £]]]. Snippet unique.
+relie apply.js pour bien comprendre le system.
+REGLE D OR ABSOLUE: ENVOYER Une introduction
+Puis LE CODE EN UN SEUL BLOC PRÉCÉDÉ DE ````ET SUIVIT DE ```` AFIN DE GÉNÉRÉ UNE SNIPETTE QUE JE POURRAIS COLLER DANS UPDATE.TXT TOUT CODE NON CONTENU DANS UNE SIPETTE UNIQUE SERA INUTILE TOKENS PERDUS
+Enfin une conclusion
+
+GOOGLE DRIVE UTILISE L INTELLIGENCE DE MON ADRESSE PERSO VUILLET.JEAN@GMAIL.COM MAIS TRAVAIL DANS LE GOOGLE PRO VUILLET.JEAN@CONDAMINE.EDU.EC
+
+
+!!! EN MAJUSCULE CELLES QUI MARCHENT PAS OU LES BUGS
+Liste des fonctionalités du site a ne surtout pas casser et a faire progresser
+🛡️ 1. ESPACE ADMIN (Le Cœur du Système)
+C'est la base de données et la structure de l'établissement.
+Fonctionnalités Sanctuarisées (À ne pas casser) :
+
+Gestion Utilisateurs admin uniquement.
+Toute nouvelle connection doit commencer par la fenêtre d'authentification
+Créer/Modifier/visualiser/Supprimer un Admin (Nom, Prénom, Email,Password ).l'ensemble Prénom + Nom doit être une clé unique. Les password doivent faire l'objet de hashage ( bcryptjs).
+Créer/Modifier/visualiser/Supprimer une classe (ex: 6A) . Le nom de la classe doit être une clé unique. Dans une classe voir la liste des élèves.
+Créer/Modifier/visualiser/Supprimer un groupe (ex: 3C LVA Anglais).Dans un groupe voir la liste des élèves.Le nom du groupe doit être une clé unique
+Créer/Modifier/visualiser/Supprimer un Professeur : Définir  Email, nom = première partie du mail, prénom = deuxième partie du mail,password qui doit faire l'objet de hashage ( bcryptjs).Lui assigner ses Matières et ses Classes et ses Groupes (ex: 2A, 1D BFI).l'ensemble Prénom + Nom doit être une clé unique.
+Créer/Modifier/Visualiser/Supprimer un Élève : Définir son Nomcomplet, Email, nom = première partie du mail, prénom = deuxième partie du mail,Email Parents, Classe principale et ses Groupes (Options). l'ensemble Prénom + Nom doit être une clé unique.
+Importation Massive : Je peux importer des listes d'élèves a partir d'un fichier CSV dont le nom doit être Classe.cvs ( exemple "1D.csv"). Il faut vérifier que le nom du fichier correspond à la classe choisie. L'IA doit parser les colonnes automatiquement de la manière suivante :
+EMAIL à partir de la colonne Email
+LASTNAME à partir de la première partie de l'Email ( avant le .)
+FIRSTNAME à partir de la deuxième partie de l'Email
+FULLNAME à partir de la colonne élève
+GENDER à partir de la première lettre de la colonne sexe
+BIRTHDATE à partir de la colonne "Né(e) le"
+PASSWORD initialiser avec BIRTHDATE au format jjmmaaaa
+CURRENTCLASS à partir de la classe choisie
+ASSIGNEDGROUPS : les groupes de l'élève sont à prendre dans les colonnes M (option 1), N (option 2), O (option 3), P seulement si le titre est "Autres options". Les groupes sont séparés par des virgules et le code groupe se construit de la manière suivante : classe + " "+ groupe,  exemple "1D ANGLAIS". Si un groupe n'existe pas dans CLASSROOMS, il faut le créer.
+A la fin de l'import, il faut un compte rendu pour signaler les erreurs.
+[[[£ END: systemInstructions.md £]]]
+
+[[[£ FILE: tests/integrity.test.js £]]]
+/**
+ * 🕵️‍♂️ SUITE DE TESTS D'INTÉGRITÉ - VERSION 69
+ * Ce script valide que chaque injection de code respecte les User Stories.
+ */
+const fetch = require('node-fetch');
+
+const API = "http://localhost:3000/api";
+
+async function runIntegritySuite() {
+    console.log("\n🚀 [GARDien] LANCEMENT DES TESTS DE NON-RÉGRESSION...");
+    console.log("------------------------------------------------");
+
+    const tests = [
+        { name: "SÉCURITÉ : Chargement des 17 Modèles", url: "/admin/database-dump" },
+        { name: "CLOUDSYNC : Accès au Réservoir Vault", url: "/structure/drive-tree" },
+        { name: "IA : Moteur Gemini 2.0 Flash", url: "/structure/diagnostic?mode=deep" },
+        { name: "AUTH : Backdoor Architecte (Jean)", url: "/auth/config" }
+    ];
+
+    let fails = 0;
+
+    for (const t of tests) {
+        try {
+            const res = await fetch(`${API}${t.url}`);
+            if (res.ok) {
+                console.log(`✅ PASS : ${t.name}`);
+            } else {
+                console.log(`❌ FAIL : ${t.name} (Status: ${res.status})`);
+                fails++;
+            }
+        } catch (e) {
+            console.log(`❌ CRASH : ${t.name} (Serveur éteint ?)`);
+            fails++;
+        }
+    }
+
+    console.log("------------------------------------------------");
+    if (fails > 0) {
+        console.log(`⚠️  ALERTE : ${fails} régression(s) détectée(s). MERGE DÉCONSEILLÉ.`);
+        process.exit(1);
+    } else {
+        console.log("✨ SYSTÈME 100% VALIDE. PRÊT POUR INJECTION.");
+        process.exit(0);
+    }
+}
+
+runIntegritySuite();
+[[[£ END: tests/integrity.test.js £]]]

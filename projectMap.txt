@@ -1,0 +1,108 @@
+├── ...
+├── .gitignore
+├── DB_MAP.md
+├── INSTRUCTIONS_OAUTH.md
+├── LOCKED_FILES.md
+├── apply.js
+├── apply_status.json
+├── cleanup.js
+├── client/
+│   ├── .eslintrc.cjs
+│   ├── .gitignore
+│   ├── README.md
+│   ├── index.html
+│   ├── package.json
+│   ├── postcss.config.cjs
+│   ├── public/
+│   │   └── vite.svg
+│   ├── src/
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── assets/
+│   │   │   └── react.svg
+│   │   ├── components/
+│   │   │   └── SystemStatus/
+│   │   │       ├── SystemStatus.css
+│   │   │       └── SystemStatus.jsx
+│   │   ├── features/
+│   │   │   ├── admin/
+│   │   │   │   ├── AdminDashboard.css
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── AdminPage.css
+│   │   │   │   ├── AdminPage.jsx
+│   │   │   │   └── components/
+│   │   │   │       ├── DatabaseViewer.css
+│   │   │   │       ├── DatabaseViewer.jsx
+│   │   │   │       ├── DriveViewer.css
+│   │   │   │       └── DriveViewer.jsx
+│   │   │   └── auth/
+│   │   │       ├── Login.css
+│   │   │       └── Login.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── test_ok.txt
+│   │   ├── test_token_crash.js
+│   │   └── test_token_valid.txt
+│   ├── tailwind.config.cjs
+│   └── vite.config.js
+├── db-structure.js
+├── git-auto.js
+├── init-db.js
+├── magic-paste.js
+├── mongodbview.js
+├── package.json
+├── projectMap.txt
+├── public/
+│   ├── images/
+│   │   ├── Fiche_Croissance_Demographique_5e.docx
+│   │   ├── jetpack.png
+│   │   ├── jumper.png
+│   │   └── ~$che_Croissance_Demographique_5e.docx
+│   └── style.css
+├── scan-all-db.js
+├── server/
+│   ├── core/
+│   │   ├── ai.engine.js
+│   │   ├── drive.engine.js
+│   │   └── ocr.engine.js
+│   ├── domains/
+│   │   ├── admin/
+│   │   │   ├── admin.routes.js
+│   │   │   ├── ai/
+│   │   │   │   ├── admin.ai.js
+│   │   │   │   └── project-doc.ai.js
+│   │   │   ├── db/
+│   │   │   │   └── admin.db.js
+│   │   │   └── experts/
+│   │   │       ├── admin.db.js
+│   │   │       └── admin.expert.js
+│   │   ├── auth/
+│   │   │   ├── auth.routes.js
+│   │   │   ├── db/
+│   │   │   │   └── auth.db.js
+│   │   │   └── experts/
+│   │   │       └── auth.expert.js
+│   │   └── structure/
+│   │       └── structure.routes.js
+│   ├── models/
+│   │   ├── AcademicYear.js
+│   │   ├── AccessLog.js
+│   │   ├── Admin.js
+│   │   ├── BugReport.js
+│   │   ├── Classroom.js
+│   │   ├── DeploySignal.js
+│   │   ├── Enrollment.js
+│   │   ├── ProjectDoc.js
+│   │   ├── Student.js
+│   │   ├── Subject.js
+│   │   └── Teacher.js
+│   ├── server.js
+│   └── version.json
+├── snap.js
+├── systemInstructions.md
+├── tests/
+│   └── integrity.test.js
+├── tree.txt
+└── verificatons.txt
